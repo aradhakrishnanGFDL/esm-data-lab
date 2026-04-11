@@ -8,6 +8,7 @@ pages = {
     "home": ("Home", None),
     "github": ("Module 1: GitHub Repo (Web)", github_repo_web.run),
     "git": ("Module 2: Git Basics", git_intro.run),
+    "ide":    ("Module 3: Developing in your IDE", None),
 }
 
 # --- Read URL param ---
@@ -35,5 +36,8 @@ name, func = pages[selected_key]
 if selected_key == "home":
     st.title("Welcome ESM Data Lab User")
     st.write("Select a module from the side bar")
+elif func is None:
+    st.title(name)
+    st.write("Coming soon.")
 else:
     func()
