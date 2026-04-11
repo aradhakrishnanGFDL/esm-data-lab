@@ -13,13 +13,7 @@ def run():
     5. Create
     """)
 
-    st.header("References")
-
-    st.markdown("""
-- https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository  
-    """)
-
-    st.header("Check")
+    st.header("Reflect")
 
     answer = st.radio(
         "A repository is used to:",
@@ -33,7 +27,9 @@ def run():
 
     if answer == "Store project files":
         st.success("Correct")
-    elif answer:
+    elif answer == "Select an answer":
+        pass
+    else:
         st.error("Try again")
 
     st.header("Task")
@@ -52,3 +48,10 @@ def run():
 
     if done and repo_url:
        st.success("Done")
+
+
+    st.header("References")
+
+    st.markdown("""
+- https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository
+    """)
