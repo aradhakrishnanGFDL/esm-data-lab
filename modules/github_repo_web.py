@@ -41,18 +41,8 @@ def run():
 
    st.header("Task")
 
-   st.write("Create a repository named `atw_diags` on GitHub.")
-
-   st.write("""
-   Follow:
-   1. Go to https://github.com
-   2. Click "+"
-   3. New repository
-   4. Name: atw_diags
-   5. Add README
-   6. Create
-   """)
-
+   st.write("Create a repository on GitHub (e.g., atw_diags).")
+   
    repo_url = st.text_input("Paste your repository URL")
 
    if repo_url:
