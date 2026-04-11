@@ -3,32 +3,37 @@ from modules import git_intro, github_repo_web
 
 st.sidebar.title("Course")
 
-# All pages
+# Define modules
 pages = {
-    "Home": None,
-    "Git Basics": git_intro.run,
-    "GitHub Repo (Web)": github_repo_web.run,
+    "home": ("Home", None),
+    "git": ("Git Basics", git_intro.run),
+    "github": ("GitHub Repo (Web)", github_repo_web.run),
 }
 
-# Search
-search = st.sidebar.text_input("Search")
+# --- Read URL param ---
+query_params = st.query_params
+current_module = query_params.get("module", "home")
 
-# Filter pages
-if search:
-    filtered_pages = {
-        name: func
-        for name, func in pages.items()
-        if search.lower() in name.lower()
-    }
-else:
-    filtered_pages = pages
+# --- Sidebar navigation ---
+labels = [v[0] for v in pages.values()]
+keys = list(pages.keys())
 
-# Navigation
-page = st.sidebar.radio("", list(filtered_pages.keys()))
+# Find current index
+index = keys.index(current_module) if current_module in keys else 0
 
-# Run page
-if page == "Home":
+selected_label = st.sidebar.radio("", labels, index=index)
+
+# Map label → key
+selected_key = keys[labels.index(selected_label)]
+
+# --- Update URL when user clicks ---
+st.query_params["module"] = selected_key
+
+# --- Render page ---
+name, func = pages[selected_key]
+
+if selected_key == "home":
     st.title("Welcome ESM Data Lab User")
     st.write("Select a module from the side bar")
 else:
-    filtered_pages[page]()
+    func()
