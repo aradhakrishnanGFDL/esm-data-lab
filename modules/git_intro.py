@@ -18,12 +18,9 @@ def run():
     st.code('ssh-keygen -t ed25519 -C "your@email.com"', language="bash")
     st.write("Press Enter through all prompts to accept defaults. Then copy your public key:")
 
-    tab_mac, tab_win = st.tabs(["Mac/Linux", "Windows"])
+    tab_mac, tab_win = st.tabs(["Mac/Linux"])
     with tab_mac:
         st.code("cat ~/.ssh/id_ed25519.pub", language="bash")
-    with tab_win:
-        st.code("type %USERPROFILE%\\.ssh\\id_ed25519.pub", language="bash")
-
     st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — paste and save.")
     st.write("Test the connection:")
     st.code("ssh -T git@github.com", language="bash")
