@@ -25,6 +25,7 @@ def run():
     answer = st.radio(
         "A repository is used to:",
         [
+            "Select an answer",
             "Store project files",
             "Install software",
             "Run code"
@@ -36,14 +37,31 @@ def run():
     elif answer:
         st.error("Try again")
 
-    st.header("Task")
 
-    repo = st.text_input("Repository name")
 
-    done = st.checkbox("Created on GitHub")
+   st.header("Task")
 
-    if done:
-        st.success("Done")
+   st.write("Create a repository named `atw_diags` on GitHub.")
 
-    st.markdown("---")
-    st.write("Next: Push code to GitHub")
+   st.write("""
+   Follow:
+   1. Go to https://github.com
+   2. Click "+"
+   3. New repository
+   4. Name: atw_diags
+   5. Add README
+   6. Create
+   """)
+
+   repo_url = st.text_input("Paste your repository URL")
+
+   if repo_url:
+       if "github.com" in repo_url and "atw_diags" in repo_url:
+           st.success("Looks correct")
+       else:
+           st.error("Check name or format")
+
+   done = st.checkbox("Created atw_diags")
+
+   if done and repo_url:
+       st.success("Done")
