@@ -1,16 +1,34 @@
 import streamlit as st
-from modules import git_intro
+from modules import git_intro, github_repo_web
 
-st.sidebar.title("Course Navigation")
+st.sidebar.title("Course")
 
-page = st.sidebar.selectbox(
-    "Choose a module",
-    ["Home", "Git Basics"]
-)
+# All pages
+pages = {
+    "Home": None,
+    "Git Basics": git_intro.run,
+    "GitHub Repo (Web)": github_repo_web.run,
+}
 
+# Search
+search = st.sidebar.text_input("Search")
+
+# Filter pages
+if search:
+    filtered_pages = {
+        name: func
+        for name, func in pages.items()
+        if search.lower() in name.lower()
+    }
+else:
+    filtered_pages = pages
+
+# Navigation
+page = st.sidebar.radio("", list(filtered_pages.keys()))
+
+# Run page
 if page == "Home":
     st.title("Welcome")
-    st.write("Select a module from the sidebar")
-
-elif page == "Git Basics":
-    git_intro.run()
+    st.write("Select a module")
+else:
+    filtered_pages[page]()
