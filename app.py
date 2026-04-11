@@ -1,9 +1,16 @@
 import streamlit as st
+from modules import git_intro
 
-st.title("Hello World 👋")
-st.write("Welcome to your first Streamlit app!")
+st.sidebar.title("Course Navigation")
 
-name = st.text_input("What's your name?")
+page = st.sidebar.selectbox(
+    "Choose a module",
+    ["Home", "Git Basics"]
+)
 
-if name:
-    st.write(f"Hello, {name}! 🎉")
+if page == "Home":
+    st.title("Welcome")
+    st.write("Select a module from the sidebar")
+
+elif page == "Git Basics":
+    git_intro.run()
