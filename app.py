@@ -6,8 +6,8 @@ st.sidebar.title("Course")
 # Define modules
 pages = {
     "home": ("Home", None),
-    "git": ("Git Basics", git_intro.run),
     "github": ("GitHub Repo (Web)", github_repo_web.run),
+    "git": ("Git Basics", git_intro.run),
 }
 
 # --- Read URL param ---
