@@ -16,7 +16,6 @@ def run():
     st.header("References")
 
     st.markdown("""
-- :contentReference[oaicite:0]{index=0} (main site)  
 - https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository  
     """)
 
@@ -37,21 +36,19 @@ def run():
     elif answer:
         st.error("Try again")
 
+    st.header("Task")
 
-
-   st.header("Task")
-
-   st.write("Create a repository on GitHub (e.g., atw_diags).")
+    st.write("Create a repository on GitHub (e.g., atw_diags).")
    
-   repo_url = st.text_input("Paste your repository URL")
+    repo_url = st.text_input("Paste your repository URL")
 
-   if repo_url:
+    if repo_url:
        if "github.com" in repo_url and "atw_diags" in repo_url:
            st.success("Looks correct")
        else:
            st.error("Check name or format")
 
-   done = st.checkbox("Created atw_diags")
+    done = st.checkbox("Created atw_diags")
 
-   if done and repo_url:
+    if done and repo_url:
        st.success("Done")
