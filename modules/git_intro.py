@@ -8,10 +8,39 @@ def run():
     add a file, and push your first commit.
     """)
 
+    st.info("🖥️ **GFDL users:** SSH into your workstation before continuing.")
+
+    # ── Step 0 ───────────────────────────────────────────────────────────────
+    st.header("0. Set up SSH key")
+    st.write("Check if you already have one:")
+    st.code("ls ~/.ssh/id_ed25519.pub", language="bash")
+    st.write("If you see the file, skip to Step 1. If not, generate one:")
+    st.code('ssh-keygen -t ed25519 -C "your@email.com"', language="bash")
+    st.write("Press Enter through all prompts to accept defaults. Then copy your public key:")
+
+    tab_mac, tab_win = st.tabs(["Mac/Linux", "Windows"])
+    with tab_mac:
+        st.code("cat ~/.ssh/id_ed25519.pub", language="bash")
+    with tab_win:
+        st.code("type %USERPROFILE%\\.ssh\\id_ed25519.pub", language="bash")
+
+    st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — paste and save.")
+    st.write("Test the connection:")
+    st.code("ssh -T git@github.com", language="bash")
+    st.write("You should see: `Hi your-username! You've successfully authenticated.`")
+
     # ── Step 1 ───────────────────────────────────────────────────────────────
     st.header("1. Clone the repo")
-    st.write("In your terminal, run:")
-    st.code("git clone https://github.com/your-username/atw_diags.git", language="bash")
+    st.write("Choose your preferred method:")
+
+    tab_ssh, tab_https = st.tabs(["SSH (recommended)", "HTTPS"])
+    with tab_ssh:
+        st.code("git clone git@github.com:your-username/atw_diags.git", language="bash")
+    with tab_https:
+        st.write("You'll be prompted for your GitHub username and a **personal access token** (not your password).")
+        st.write("Generate one at: **GitHub → Settings → Developer settings → Personal access tokens**")
+        st.code("git clone https://github.com/your-username/atw_diags.git", language="bash")
+
     st.write("Then move into the folder:")
     st.code("cd atw_diags", language="bash")
 
@@ -43,11 +72,20 @@ git commit -m "add files"
     st.write("Open your repo on GitHub — you should see your files there.")
 
     # ── Task ─────────────────────────────────────────────────────────────────
+
+# ── Task ─────────────────────────────────────────────────────────────────
     st.markdown("---")
     st.write("**Your turn:** Follow the steps above using your own repo.")
+
     completed = st.checkbox("I pushed my first commit")
     if completed:
-        st.success("Done. Your code is now on GitHub.")
+        repo_url = st.text_input("Paste your GitHub repo URL:")
+        git_log = st.text_area("Paste the output of `git log --oneline`:")
+
+        if repo_url and git_log:
+            st.success("Done. Your code is now on GitHub. Great job with your first commit")
+            st.balloons()
 
     st.markdown("---")
-    st.write("Next: Branching and pull requests")
+    #st.write("Next: Branching and pull requests")
+
