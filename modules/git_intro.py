@@ -8,7 +8,7 @@ def run():
     add a file, and push your first commit.
     """)
 
-    st.info("🖥️ **GFDL users:** SSH into your workstation before continuing.")
+    st.info("**GFDL users:** SSH into your workstation before continuing.")
 
     # ── Step 0 ───────────────────────────────────────────────────────────────
     st.header("0. Set up SSH key")
@@ -18,7 +18,7 @@ def run():
     st.code('ssh-keygen -t ed25519 -C "your@email.com"', language="bash")
     st.write("Press Enter through all prompts to accept defaults. Then copy your public key:")
 
-    tab_mac, tab_win = st.tabs(["Mac/Linux"])
+    tab_mac = st.tabs(["Mac/Linux"])
     with tab_mac:
         st.code("cat ~/.ssh/id_ed25519.pub", language="bash")
     st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — paste and save.")
