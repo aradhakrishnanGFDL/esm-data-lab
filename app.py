@@ -28,7 +28,7 @@ page = st.sidebar.radio("", list(filtered_pages.keys()))
 
 # Run page
 if page == "Home":
-    st.title("Welcome")
-    st.write("Select a module")
+    st.title("Welcome ESM Data Lab User")
+    st.write("Select a module from the side bar")
 else:
     filtered_pages[page]()
