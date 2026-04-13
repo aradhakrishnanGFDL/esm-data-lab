@@ -13,6 +13,14 @@ def run():
     5. Create
     """)
 
+    st.write("Once the repository is created, you'll see a tab called "Code" which will give you the https and ssh 
+    st.markdown("""
+    ### Find your GitHub clone URL
+
+    1. Open your repository on GitHub  
+    2. Click the green **Code** button  
+    3. Copy the URL under **HTTPS** (or SSH) and use it for the next part
+    """)
     st.header("Reflect")
 
     answer = st.radio(

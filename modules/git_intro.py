@@ -18,7 +18,7 @@ def run():
     st.code('ssh-keygen -t ed25519 -C "your@email.com"', language="bash")
     st.write("Press Enter through all prompts to accept defaults. Then copy your public key:")
     st.code("cat ~/.ssh/id_ed25519.pub", language="bash")
-    st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — paste and save.")
+    st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — Type a title, e.g. workstation-gfdl, paste public key in the Key textbox and click 'Add SSH key' ")
     st.write("Test the connection:")
     st.code("ssh -T git@github.com", language="bash")
     st.write("You should see: `Hi your-username! You've successfully authenticated.`")
@@ -30,6 +30,7 @@ def run():
     tab_ssh, tab_https = st.tabs(["SSH (recommended)", "HTTPS"])
     with tab_ssh:
         st.code("git clone git@github.com:your-username/atw_diags.git", language="bash")
+        st.write("Replace atw_diags.git with the git repository you created in Module 1")
     with tab_https:
         st.write("You'll be prompted for your GitHub username and a **personal access token** (not your password).")
         st.write("Generate one at: **GitHub → Settings → Developer settings → Personal access tokens**")
