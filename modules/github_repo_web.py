@@ -1,6 +1,8 @@
 import streamlit as st
 
 def run():
+
+    st.markdown("New to GitHub? [Create an account first](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github)")
     st.title("Create a GitHub Repository")
 
     st.write("Go to https://github.com and create a new repository.")
