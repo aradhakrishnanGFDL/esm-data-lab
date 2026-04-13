@@ -46,7 +46,7 @@ def run():
     repo_url = st.text_input("Paste your repository URL")
 
     if repo_url:
-       if url.startswith("https://github.com/") or url.startswith("git@github.com:"):
+       if repo_url.startswith("https://github.com/") or url.startswith("git@github.com:"):
            st.success("Looks correct")
        else:
            st.error("Check name or format")
