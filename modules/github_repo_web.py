@@ -3,7 +3,7 @@ import streamlit as st
 def run():
 
     st.title("Create a GitHub Repository")
-    st.info("New to GitHub? [Create an account first - Follow these 4 steps and come back!](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github#signing-up-for-a-new-personal-account)")
+    st.info("New to GitHub? Create an account first [Click to follow these 4 steps and come back!](https://docs.github.com/en/get-started/start-your-journey/creating-an-account-on-github#signing-up-for-a-new-personal-account)")
     st.write("Go to https://github.com and create a new repository.")
 
     st.write("""
