@@ -13,7 +13,6 @@ def run():
     5. Create
     """)
 
-    st.write("Once the repository is created, you'll see a tab called "Code" which will give you the https and ssh 
     st.markdown("""
     ### Find your GitHub clone URL
 
