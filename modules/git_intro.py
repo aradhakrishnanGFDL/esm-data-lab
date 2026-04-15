@@ -11,6 +11,8 @@ def run():
     st.info("**GFDL users:** SSH into your workstation before continuing.")
 
     # ── Step 0 ───────────────────────────────────────────────────────────────
+    st.info("An SSH key (e.g., id_ed25519) is a secure way to connect your computer to GitHub without using a password. It uses a public/private key pair for authentication. Learn more: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh")
+    st.caption("id_ed25519 uses a modern encryption method (Ed25519) — a fast, secure algorithm for SSH keys")
     st.header("0. Set up SSH key")
     st.write("Check if you already have one:")
     st.code("ls ~/.ssh/id_ed25519.pub", language="bash")
