@@ -58,6 +58,7 @@ def run():
        st.success("Done")
  
     st.info("Refer to GitHub Docs: [Change visibility](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/managing-repository-settings/setting-repository-visibility?utm_source=chatgpt.com#changing-a-repositorys-visibility) | [Add collaborators](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/repository-access-and-collaboration/inviting-collaborators-to-a-personal-repository")
+    st.info("Note that collaborators added a private repo are given write access and roles can't be changed if one is using the free tier plans")
  
     st.header("References")
 
