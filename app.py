@@ -7,7 +7,8 @@ st.sidebar.title("Course Modules")
 pages = {
     "home": ("Home", None),
     "github": ("Module 1: GitHub Repo (Web)", github_repo_web.run),
-    "git": ("Module 2: Git Basics-1", git_intro.run),
+    "git_setup": ("Module 2: Git Basic setup", git_intro.run),
+    "git_repo": ("Module 3:  Your first Git workflow", git_rep.run), 
     "ide":    ("Module 3: Developing in your IDE", None),
 }
 
