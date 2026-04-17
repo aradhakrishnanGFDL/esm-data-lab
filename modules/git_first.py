@@ -28,9 +28,9 @@ def run():
 
     with tab2:
         st.write("Copy a file from another location into your repo folder:")
-        st.code("cp /home/a1r/atw/atw_diags/environment.yaml atw_diags/", language="bash")
+        st.code("cp /home/a1r/atw/atw_diags/environment.yaml .", language="bash")
         st.write("Or copy an entire directory :")
-        st.code("cp -r /home/a1r/atw/atw_diags atw_diags/", language="bash")
+        st.code("cp -r /home/a1r/atw/atw_diags/* .", language="bash")
 
     # ── Step 3 ───────────────────────────────────────────────────────────────
     st.header("3. Stage and commit")
@@ -38,10 +38,12 @@ def run():
       git add .
       git commit -m "add files"
       """, language="bash")
-
+    st.caption("You just told git you want stage some file you are about to check in/commit to your local git repo. When you issued a "commit", it commits the changes to your LOCAL git repo")
     # ── Step 4 ───────────────────────────────────────────────────────────────
     st.header("4. Push to GitHub")
-    st.code("git push", language="bash")
+    st.info("origin is the name of the remote branch. You can do it a git remote -v to see the details.")
+    st.code("git push -u origin main:main", language="bash")
+    st.caption("By pushing to the remote (origin), you have also pushed your changes to the remote git repo. The branch that contains your changes is the main branch. We will discuss more about branches later")
     st.write("Open your repo on GitHub web interface and go to your repository — you should see your files there.")
 
     # ── Task ─────────────────────────────────────────────────────────────────
