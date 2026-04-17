@@ -12,19 +12,28 @@ def run():
 
     # ── Step 0 ───────────────────────────────────────────────────────────────
     st.header("0. Set up SSH key")
-    st.info("An SSH key (e.g., id_ed25519) is a secure way to connect your computer to GitHub without using a password. It uses a public/private key pair for authentication. Learn more: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh")
-    st.caption("id_ed25519 uses a modern encryption method (Ed25519) — a fast, secure algorithm for SSH keys")
+    st.info("An SSH key (e.g., id_rsa) is a secure way to connect your computer to GitHub without using a password. It uses a public/private key pair for authentication. Learn more: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/about-ssh")
     st.write("Check if you already have one:")
-    st.code("ls ~/.ssh/id_ed25519.pub", language="bash")
+    st.code("ls ~/.ssh/id_rsa_gh", language="bash")
+    st.caption("Note: You may provide a different name for the keys")
     st.write("If you see the file, skip to Step 1. If not, generate one:")
-    st.code('ssh-keygen -t ed25519 -C "your@email.com"', language="bash")
+    st.code('ssh-keygen -t rsa -C "youremail@example.com"', language="bash")
     st.write("Press Enter through all prompts to accept defaults. Then copy your public key:")
-    st.code("cat ~/.ssh/id_ed25519.pub", language="bash")
+    st.warning("Do not share your private key. Just add it to your ssh config")
+    st.code("""# Open your SSH config file
+    (use your fav editor) ~/.ssh/config
+    # Add an entry like this:
+    Host github
+       HostName github.com
+       User git
+       IdentityFile ~/.ssh/id_rsa_gh
+    """)
+    st.code("cat ~/.ssh/id_rsa_gh.pub", language="bash")
     st.write("Then add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — Type a title, e.g. workstation-gfdl, paste public key in the Key textbox and click 'Add SSH key' ")
     st.write("Test the connection:")
     st.code("ssh -T git@github.com", language="bash")
     st.write("You should see: `Hi your-username! You've successfully authenticated.`")
-
+    st.info("What did we just do? We told our workstation to allow ssh remote access to GitHub using the private key we saved in     our ssh config file; and we told GitHub to associate the matching public key we saved in Github. So, when we try to connect to the server github from our workstation, the key combinations are validated and access is granted. You can now use this to clone github repositories, commit and push changes to it, without having to type passwords")
     # ── Step 1 ───────────────────────────────────────────────────────────────
     st.header("1. Clone the repo")
     st.write("Choose your preferred method:")
