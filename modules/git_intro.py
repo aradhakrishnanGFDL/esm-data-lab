@@ -23,10 +23,11 @@ def run():
     st.write("**Now, add the path to private key to your ssh config**")
     st.write("""# Open your SSH config file
     (use your fav editor) ~/.ssh/config and add the following entry. """)
-    st.code("Host github.com
-       User git
-       IdentityFile ~/.ssh/id_rsa_gh
-    ")
+    st.code("""
+    Host github.com
+        User git
+        IdentityFile ~/.ssh/id_rsa_gh
+    """)
     st.write("**NEXT** - Copy your public copy from the following path")
     st.code("cat ~/.ssh/id_rsa_gh.pub", language="bash")
     st.write("**NEXT** -  Add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — Type a title, e.g. workstation-gfdl, paste public key in the Key textbox and click 'Add SSH key' ")
