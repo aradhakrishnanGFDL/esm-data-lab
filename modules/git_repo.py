@@ -1,3 +1,6 @@
+import streamlit as st
+
+  def run():
     # ── Step 1 ───────────────────────────────────────────────────────────────
     st.info("All of the following steps will be done from your Linux terminal. If you're at GFDL, ssh into your workstation and then work on these")
     st.header("1. Clone the repo")
@@ -32,9 +35,9 @@
     # ── Step 3 ───────────────────────────────────────────────────────────────
     st.header("3. Stage and commit")
     st.code("""
-git add .
-git commit -m "add files"
-""", language="bash")
+      git add .
+      git commit -m "add files"
+      """, language="bash")
 
     # ── Step 4 ───────────────────────────────────────────────────────────────
     st.header("4. Push to GitHub")
