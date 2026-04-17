@@ -54,10 +54,8 @@ def run():
 
     completed = st.checkbox("I pushed my first commit")
     if completed:
-        repo_url = st.text_input("Paste your GitHub repo URL:")
-        git_log = st.text_area("Paste the output of `git log --oneline`:")
-
-        if repo_url and git_log:
+        git_remote = st.text_area("Paste the output of `git remote -v`:")
+        if git_remote:
             st.success("Done. Your code is now on GitHub. Great job with your first commit")
             st.balloons()
 
