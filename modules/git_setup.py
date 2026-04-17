@@ -1,11 +1,10 @@
 import streamlit as st
 
 def run():
-    st.title("Git Basics: Your First Commit from Terminal")
-    st.write("Version: April 17 update")
+    st.title("Git Basics: Set up before you try some git commands")
     st.write("""
-    You've created a repo on GitHub. Now let's get it onto your machine,
-    add a file, and push your first commit.
+    You've created a repo on GitHub. By the end of this module, you'll have an environment
+             that helps you interact with git from your terminal
     """)
 
     st.info("**GFDL users:** SSH into your workstation before continuing.")

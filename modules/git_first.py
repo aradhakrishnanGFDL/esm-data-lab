@@ -2,6 +2,7 @@ import streamlit as st
 
 def run():
     # ── Step 1 ───────────────────────────────────────────────────────────────
+    st.write("At the end of this module, you will have pushed your first commit to GitHub. This is a very basic workflow that you can use to push changes to GitHub. ")
     st.info("All of the following steps will be done from your Linux terminal. If you're at GFDL, ssh into your workstation and then work on these")
     st.header("1. Clone the repo")
     st.write("Choose your preferred method:")

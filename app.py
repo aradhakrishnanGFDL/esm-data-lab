@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_intro, github_repo_web, git_first
+from modules import git_setup, github_repo_web, git_first
 
 st.sidebar.title("Course Modules")
 
@@ -7,9 +7,9 @@ st.sidebar.title("Course Modules")
 pages = {
     "home": ("Home", None),
     "github": ("Module 1: GitHub Repo (Web)", github_repo_web.run),
-    "git_setup": ("Module 2: Git Basic setup", git_intro.run),
+    "git_setup": ("Module 2: Git Basic setup", git_setup.run),
     "git_repo": ("Module 3:  Your first Git workflow", git_first.run), 
-    "ide":    ("Module 3: Developing in your IDE", None),
+    "ide":    ("Module 3: Developing in your IDE", ide),
 }
 
 # --- Read URL param ---
