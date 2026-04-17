@@ -1,6 +1,6 @@
 import streamlit as st
 
-  def run():
+def run():
     # ── Step 1 ───────────────────────────────────────────────────────────────
     st.info("All of the following steps will be done from your Linux terminal. If you're at GFDL, ssh into your workstation and then work on these")
     st.header("1. Clone the repo")
