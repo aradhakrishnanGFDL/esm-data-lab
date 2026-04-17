@@ -2,6 +2,9 @@ import streamlit as st
 
 def run():
     st.title("Git Basics: Your First Commit from Terminal")
+    import streamlit as st
+
+    st.write("Version: April 17 update")
 
     st.write("""
     You've created a repo on GitHub. Now let's get it onto your machine,
