@@ -9,7 +9,7 @@ pages = {
     "github": ("Module 1: GitHub Repo (Web)", github_repo_web.run),
     "git_setup": ("Module 2: Git Basic setup", git_setup.run),
     "git_repo": ("Module 3:  Your first Git workflow", git_first.run), 
-    "ide":    ("Module 3: Developing in your IDE", ide),
+    "ide":    ("Module 3: Developing in your IDE", ide.run),
 }
 
 # --- Read URL param ---
