@@ -49,7 +49,8 @@ def run():
     )
 
     completed = st.checkbox("I completed all steps")
-    if not understood or not completed:
+    if understood != "Not yet" and completed:    
+       st.markdown("Great, lets move on")
+    else:
        st.markdown("Take a moment to ensure you're comfortable before moving on. These steps are required to move to next module")
-    if understood or completed:
-       st.markdown("Great, lets move on") 
+ 
