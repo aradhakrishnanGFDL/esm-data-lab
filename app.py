@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first
+from modules import git_setup, github_repo_web, git_first, ide
 
 st.sidebar.title("Course Modules")
 
