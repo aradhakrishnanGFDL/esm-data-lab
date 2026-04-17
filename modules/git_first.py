@@ -38,7 +38,7 @@ def run():
       git add .
       git commit -m "add files"
       """, language="bash")
-    st.caption("You just told git you want stage some file you are about to check in/commit to your local git repo. When you issued a "commit", it commits the changes to your LOCAL git repo")
+    st.caption("You just told git you want to stage fils eyou are about to check in/commit to your local git repo. When you issued a **commit**, it commits the changes to your LOCAL git repo")
     # ── Step 4 ───────────────────────────────────────────────────────────────
     st.header("4. Push to GitHub")
     st.info("origin is the name of the remote branch. You can do it a git remote -v to see the details.")
