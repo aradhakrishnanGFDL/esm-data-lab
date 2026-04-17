@@ -17,10 +17,10 @@ def run():
     st.code("ls ~/.ssh/id_rsa_gh", language="bash")
     st.caption("Note: You may provide a different name for the keys")
     st.write("If you see the file, skip the following step that generates a new key. If not, generate one:")
-    st.code('ssh-keygen -t rsa -C "youremail@example.com"', language="bash")
+    st.code('ssh-keygen -t rsa -C "youremail@example.com" -f ~/.ssh/id_rsa_gh', language="bash")
     st.write("Press Enter through all prompts to accept defaults.")
     st.warning("Do not share your private key")
-    st.write("Now, add the path to private key to your ssh config")
+    st.write("**Now, add the path to private key to your ssh config**")
     st.code("""# Open your SSH config file
     (use your fav editor) ~/.ssh/config
     # Add an entry like this:
@@ -29,10 +29,10 @@ def run():
        User git
        IdentityFile ~/.ssh/id_rsa_gh
     """)
-    st.write("NEXT - Copy your public copy from the following path")
+    st.write("**NEXT** - Copy your public copy from the following path")
     st.code("cat ~/.ssh/id_rsa_gh.pub", language="bash")
-    st.write("NEXT -  Add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — Type a title, e.g. workstation-gfdl, paste public key in the Key textbox and click 'Add SSH key' ")
-    st.write("Test the connection:")
+    st.write("**NEXT** -  Add it to GitHub: **Settings → SSH and GPG keys → New SSH key** — Type a title, e.g. workstation-gfdl, paste public key in the Key textbox and click 'Add SSH key' ")
+    st.write("**Test the connection:**")
     st.code("ssh -T git@github.com", language="bash")
     st.write("You should see: `Hi your-username! You've successfully authenticated.`")
     st.info("What did we just do? We told our workstation to allow ssh remote access to GitHub using the private key we saved in     our ssh config file; and we told GitHub to associate the matching public key we saved in Github. So, when we try to connect to the server github from our workstation, the key combinations are validated and access is granted. You can now use this to clone github repositories, commit and push changes to it, without having to type passwords. Next module walks through cloning and other git fundamentals")
