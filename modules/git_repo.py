@@ -2,20 +2,21 @@
     st.info("All of the following steps will be done from your Linux terminal. If you're at GFDL, ssh into your workstation and then work on these")
     st.header("1. Clone the repo")
     st.write("Choose your preferred method:")
-
+    st.caption("If you completed Module 2 setting up ssh keys, proceed with SSH option. The HTTPS option requires personal tokens to be entered every time and we will cover that in detail later")
     tab_ssh, tab_https = st.tabs(["SSH (recommended)", "HTTPS"])
     with tab_ssh:
         st.code("git clone git@github.com:your-username/atw_diags.git", language="bash")
         st.write("Replace atw_diags.git with the git repository you created in Module 1")
     with tab_https:
         st.code("git clone https://github.com/your-username/atw_diags.git", language="bash")
-
+        st.write("Refer to https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#https. This step requires personal access tokens")
     st.write("Then move into the folder:")
     st.code("cd atw_diags", language="bash")
 
     # ── Step 2 ───────────────────────────────────────────────────────────────
     st.header("2. Add files")
     st.write("Choose whichever applies to you:")
+    st.caption("Hint: If you're at GFDL and want to copy over existing diagnostics to continue your work on GitHub, 'Copy existing files, in particular copying over the entire directory is relevant'")
 
     tab1, tab2 = st.tabs(["Create a new file", "Copy existing files"])
 
@@ -25,7 +26,7 @@
     with tab2:
         st.write("Copy a file from another location into your repo folder:")
         st.code("cp /home/a1r/atw/atw_diags/environment.yaml atw_diags/", language="bash")
-        st.write("Or copy an entire folder:")
+        st.write("Or copy an entire directory :")
         st.code("cp -r /home/a1r/atw/atw_diags atw_diags/", language="bash")
 
     # ── Step 3 ───────────────────────────────────────────────────────────────
