@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, ide
+from modules import git_setup, github_repo_web, git_first, ide, cimes_internship
 
 st.sidebar.title("Course Modules")
 
@@ -10,6 +10,7 @@ pages = {
     "git_setup": ("Module 2: Git Basic setup", git_setup.run),
     "git_repo": ("Module 3:  Your first Git workflow", git_first.run), 
     "ide":    ("Module 3: Developing in your IDE", ide.run),
+    "example": ("CIMES Summer Internship 2026", cimes_internship.run),
 }
 
 # --- Read URL param ---
@@ -23,7 +24,7 @@ keys = list(pages.keys())
 # Find current index
 index = keys.index(current_module) if current_module in keys else 0
 
-selected_label = st.sidebar.radio("", labels, index=index)
+selected_label = st.sidebar.radio("", labels, index=index, key="nav")
 
 # Map label → key
 selected_key = keys[labels.index(selected_label)]
