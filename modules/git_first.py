@@ -29,9 +29,9 @@ def run():
 
     with tab2:
         st.write("Copy a file from another location into your repo folder:")
-        st.code("cp /home/a1r/atw/atw_diags/environment.yaml .", language="bash")
+        st.code("cp /home/a1r/git/atw/atw_diags/environment.yaml .", language="bash")
         st.write("Or copy an entire directory :")
-        st.code("cp -r /home/a1r/atw/atw_diags/* .", language="bash")
+        st.code("cp -r /home/a1r/git/atw/atw_diags/* .", language="bash")
 
     # ── Step 3 ───────────────────────────────────────────────────────────────
     st.header("3. Stage and commit")
