@@ -32,7 +32,7 @@ def run():
     # ── Step 1 ───────────────────────────────────────────────────────────────
     st.header("1. Find the Pull Request")
     st.write("Go to your repository on GitHub and click the **Pull requests** tab. You'll see open PRs listed there.")
-    st.write("Click on **PR #1 — Merge changes to make notebook catalog**.")
+    st.write("For e.g. Click on **PR #1 — Merge changes to make notebook catalog**.")
 
     # ── Step 2 ───────────────────────────────────────────────────────────────
     st.header("2. Review the changes")
@@ -46,12 +46,12 @@ def run():
     st.success("This branch has no conflicts with the base branch — you're ready to merge.")
     st.error("This branch has conflicts that must be resolved — do not merge yet.")
     st.write("Only proceed when you see the green message. Resolving conflicts is covered in a future module.")  # TODO: link to conflict subtask when ready
-
+    st.write("Green message with no conflicts: This  means the changes in the PR do not overlap with anything in `main` — GitHub can combine them automatically.")
     # ── Step 4 ───────────────────────────────────────────────────────────────
     st.header("4. Merge the Pull Request")
     st.write("Click the green **Merge pull request** button, then **Confirm merge**.")
     st.info("To confirm it worked: go to the **Code** tab of your repo and check that the changes from the PR now appear in the `main` branch.")
-    st.info("Learn more: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes/merging-a-pull-request")
+    st.info("Learn more: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests")
 
     # ── Reflect ──────────────────────────────────────────────────────────────
     st.markdown("### Reflect")
