@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, ide, cimes_internship
+from modules import git_setup, github_repo_web, git_first, git_collab, ide, cimes_internship
 
 st.sidebar.title("Course Modules")
 
@@ -9,6 +9,7 @@ pages = {
     "github": ("Module 1: GitHub Repo (Web)", github_repo_web.run),
     "git_setup": ("Module 2: Git Basic setup", git_setup.run),
     "git_repo": ("Module 3:  Your first Git workflow", git_first.run), 
+    "git_collab": ("Module 4: Collaborating on GitHub, git_collab.run),
     "ide":    ("Module 3: Developing in your IDE", ide.run),
     "cimes_internship": ("CIMES Summer Internship 2026", cimes_internship.run),
 }
