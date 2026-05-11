@@ -20,7 +20,7 @@ def run():
     # ── Step 2 ───────────────────────────────────────────────────────────────
     st.header("2. Add files")
     st.write("Choose whichever applies to you:")
-    st.caption("Hint: If you're at GFDL and want to copy over existing diagnostics to continue your work on GitHub, 'Copy existing files, in particular copying over the entire directory is relevant'")
+    st.caption("Hint: If you're at GFDL and want to copy over existing diagnostics to continue your work on GitHub, 'Copy existing files, in particular copying an entire directory is relevant'")
 
     tab1, tab2 = st.tabs(["Create a new file", "Copy existing files"])
 
@@ -39,10 +39,10 @@ def run():
       git add .
       git commit -m "add files"
       """, language="bash")
-    st.caption("You just told git you want to stage fils eyou are about to check in/commit to your local git repo. When you issued a **commit**, it commits the changes to your LOCAL git repo")
+    st.caption("You just told git you want to stage files you are about to check in/commit to your local git repo. When you issued a **commit**, it commits the changes to your LOCAL git repo")
     # ── Step 4 ───────────────────────────────────────────────────────────────
     st.header("4. Push to GitHub")
-    st.info("origin is the name of the remote branch. You can do it a git remote -v to see the details.")
+    st.info("origin is the name of the remote branch. You can do a git remote -v to see the details.")
     st.code("git push -u origin main:main", language="bash")
     st.caption("By pushing to the remote (origin), you have also pushed your changes to the remote git repo. The branch that contains your changes is the main branch. We will discuss more about branches later")
     st.write("Open your repo on GitHub web interface and go to your repository — you should see your files there.")
