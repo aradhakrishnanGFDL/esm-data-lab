@@ -55,7 +55,7 @@ def run():
     st.write("1. Push your changes to your **fork** on GitHub.")
     st.write("2. Go to the **original** repo (not your fork).")
     st.write("3. Click **Pull requests → New pull request**, then click **compare across forks**.")
-    st.write("4. Set the base repo to the original and the head repo to your fork and branch.")
+    st.write("4. Set the base repo (the to location - where we want our new changes to be merged in)  to the original and the head repo (the from location) to your fork and branch.")
     st.write("5. Add a title, description, and click **Create pull request**.")
     st.info("The maintainer of the original repo will receive your PR and can review or merge it.")
     st.warning("Tip: Say you forked User A's repository — User A's repo is the 'upstream repo' and yours is the fork. Always sync your fork before starting new work, either by running `git pull upstream main` in the terminal, or by clicking **Sync Fork** on your GitHub repo page (just below the branch label). The more out of date your fork, the harder merging becomes — so make it a habit to keep your `main` in sync with upstream.")
