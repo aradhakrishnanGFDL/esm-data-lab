@@ -31,7 +31,7 @@ def run():
 
     st.write("**Option A: From the terminal, cd into the path where you cloned your git repository**")
     st.code("git checkout -b update-readme", language="bash")
-    st.infi("This tells us we are taking the current code version, and branching off to update-readme. This means if you say `git checkout main` at a later point, you can still go back to the main changes. We can talk about merging interactively at some point!")
+    st.info("This tells us we are taking the current code version, and branching off to update-readme. This means if you say `git checkout main` at a later point, you can still go back to the main changes. We can talk about merging interactively at some point!")
     st.write("**Option B: From GitHub**")
     st.write("Go to your repo, click the branch dropdown (top left of the file view), type a new branch name, and click **Create branch**.")
     st.info("Best practice: use a short, descriptive branch name like `fix-login-bug` or `update-readme`. When we get to creating GitHub issues, adding the issue number as a prefix is also a great practice.")
@@ -43,7 +43,7 @@ def run():
 
     # ── Option A ─────────────────────────────────────────────────────────────
     st.header("2. Open a PR from a branch (same repo)")
-    st.write("Use this when you're working on a branch inside the same repository as your collaborators.)
+    st.write("Use this when you're working on a branch inside the same repository as your collaborators.")
     st.write("1. Go to your repo on GitHub.")
     st.write("2. Click the **Compare & pull request** banner that appears after you push, or go to **Pull requests → New pull request**.")
     st.write("3. Make sure the base (destination/to) is `main` and the compare branch (source/from) is `update-readme`.")
@@ -62,10 +62,9 @@ def run():
     # ── Reflection ───────────────────────────────────────────────────────────
     st.divider()
     st.subheader("Reflection")
-    st.write("When would you use a fork instead of a branch in the same repo?")
+    st.write("When would you use a new branch?")
     with st.expander("See answer"):
-        st.write("You fork when you don't have write access to the original repo — for example, contributing to an open-source project. Branches are for when you're already a collaborator on the repo.")
-
+        st.write("When you start working on a new feature or a bug-fix that you will eventually merge into the main branch via a PR")
     # ── Celebration ──────────────────────────────────────────────────────────
     st.components.v1.html(CELEBRATION_HTML, height=70)
 
