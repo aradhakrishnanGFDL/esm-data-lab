@@ -21,7 +21,7 @@ CELEBRATION_HTML = """
 """
 
 def run():
-    st.title("Creating a Pull Request")
+    st.title("Contribute code in collaborative settings by creating a Pull Request")
     st.write("Before opening a PR, you need a branch to work on. Here's how to create one, make your changes, and open a PR.")
 
     # ── Step 0: Create a branch ───────────────────────────────────────────────
