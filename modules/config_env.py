@@ -98,6 +98,16 @@ def run():
     st.subheader("Search for a specific package")
     st.code("conda list package-name", language="bash")
 
+
+    # ── Step 6 ───────────────────────────────────────────────────────────────
+    st.header("5. Test your environment")
+    st.write("Launch a quick Python session from the terminal to confirm your packages are importable:")
+    st.code("python", language="bash")
+    st.write("Then try importing xarray:")
+    st.code("import xarray as xr\nprint(xr.__version__)", language="python")
+    st.write("If no errors appear, your environment is working correctly. Type `exit()` to quit.")
+    st.info("Coming up: Testing your environment in Jupyter and VSCode in Module 3.")
+
     # ── Task ─────────────────────────────────────────────────────────────────
     st.markdown("---")
     st.write("**Your turn:** Create and activate your environment.")
