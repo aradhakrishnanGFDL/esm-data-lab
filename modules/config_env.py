@@ -34,7 +34,7 @@ def run():
     st.header("2. Create the environment")
     st.write("Choose whichever applies to you:")
 
-    tab1, tab2 = st.tabs(["Conda setup from environment.yaml", "Conda setup from scratch", "pixi- a speedy environment manager"])
+    tab1, tab2, tab3 = st.tabs(["Conda setup from environment.yaml", "Conda setup from scratch", "pixi- a speedy environment manager"])
 
     with tab1:
         st.write("For reference, the `atw_diags` repo includes an example `environment.yaml`:")
