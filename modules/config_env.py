@@ -1,7 +1,7 @@
 import streamlit as st
 
 def run():
-    st.title("Module 4: Set Up a Conda Environment")
+    st.title("Module 6: Set Up a Conda Environment")
     st.write("""
     Conda is a package and environment manager. It lets you create isolated environments 
     with specific packages and Python versions — so your project dependencies don't 
@@ -18,6 +18,7 @@ def run():
     
     Other users: Install Miniconda, Anaconda, or Micromamba in your environment. 
     Micromamba is a lightweight alternative to conda — same commands, faster installs.
+    We are also exploring the use of Pixi. See the pixi tab to learn more.
     """)
 
     # ── Step 1 ───────────────────────────────────────────────────────────────
@@ -33,17 +34,12 @@ def run():
     st.header("2. Create the environment")
     st.write("Choose whichever applies to you:")
 
-    tab1, tab2 = st.tabs(["From environment.yaml", "Create your own"])
+    tab1, tab2 = st.tabs(["Conda setup from environment.yaml", "Conda setup from scratch", "pixi- a speedy environment manager])
 
     with tab1:
-        st.write("""
-        The environment name is defined inside `environment.yaml`. 
-        Optionally, you can override it with `-n`. The name is what you use 
-        to activate the environment later. For example:
-        """)
         st.write("For reference, the `atw_diags` repo includes an example `environment.yaml`:")
         st.code("conda env create -n spear-analysis -f environment.yaml", language="bash")
-        st.info("Tip: Use a name that reflects the project — you may have many environments on the same machine.")
+        st.info("Tip: Use a name that reflects the project — you may have many environments on the same machine. Conda environment installation with this reference environment takes at least 10 mins in GFDL environments. If you're curious to be a new tester for pixi setup which very expedient, checkout the pixi tab")
 
         st.subheader("Adding a new package")
         st.write("""
@@ -73,7 +69,52 @@ def run():
         st.code("conda env export > environment.yaml", language="bash")
         st.info("Tip: Commit your `environment.yaml` to your repo so collaborators can recreate your environment exactly.")
         st.info("yaml and yml are both valid extensions, we may use it interchangeably in the tutorial")
+
+    with tab3:
+        st.write("Pixi is used to manage reproducible environments for this project.")
+        st.subheader("1. Install Pixi (if needed)")
+        st.code("curl -fsSL https://pixi.sh/install.sh | sh", language="bash")
+        st.subheader("2. Use the existing environment (recommended)")
+        st.info(
+            "If you were following Modules 1–3, `atw_diags` was used as the example repository: "
+            "https://github.com/aradhakrishnanGFDL/atw_diags"
+        )
+        st.write(
+            "If the repository already includes `pixi.toml` and `pixi.lock`, just install the environment:"
+        )
+        st.code(
+            """
+    cd atw_diags
+    pixi install
+            """,
+            language="bash",
+        )
+        st.info("This creates a local `.pixi/` folder containing the environment. In this case, we created it under atw_diags and so atw_diags is the project and the pixi environment corresponds to a specific project, unlike conda.")
+        st.subheader("3. Create your own environment (only if needed)")
+        st.write("If no `pixi.toml` exists, initialize and add packages:")
+        st.code(
+            """
+    pixi init
+    pixi add xarray numpy matplotlib cartopy xesmf netcdf4 intake intake-esm jupyter
+        """,
+        language="bash",
+        )
+        st.subheader("4. Test your environment")
+        st.write("Activate the environment and verify everything works:")
+        st.code(
+            """
+    pixi shell
+    python
+    >>> import xarray as xr
+    >>> print(xr.__version__)
+            """,
+            language="bash",
+        )
+        st.success("If you see a version number (e.g. 2026.4.0), your environment is working correctly.")
+
+        
     # ── Step 3 ───────────────────────────────────────────────────────────────
+    st.info("If you're using pixi, the complete set of instructions on the pixi tab above. You can skip the following steps")
     st.header("3. Activate the environment")
     st.code("conda activate your-env-name", language="bash")
     st.write("For example:")
@@ -114,7 +155,7 @@ def run():
 
     completed = st.checkbox("I activated my environment")
     if completed:
-        env_output = st.text_area("What is the name of your conda environment?")
+        env_output = st.text_area("What is the name of your conda environment? If you're using pixi, what is the name of the project?")
         if env_output:
             st.success("Nice work. By sharing your environment.yaml you are making your science reproducible.")
 
