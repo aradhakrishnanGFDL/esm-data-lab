@@ -114,7 +114,7 @@ def run():
 
         
     # ── Step 3 ───────────────────────────────────────────────────────────────
-    st.info("If you're using pixi, the complete set of instructions on the pixi tab above. You can skip the following steps")
+    st.info("If you're using pixi, the complete set of instructions are on the pixi tab above. You can skip the following steps 3-6 and jump to your task!")
     st.header("3. Activate the environment")
     st.code("conda activate your-env-name", language="bash")
     st.write("For example:")
