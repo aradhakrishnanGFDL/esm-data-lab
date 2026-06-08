@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, run_nb, ide, cimes_internship, data_access
+from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_access
 
 st.sidebar.title("Course Modules")
 
@@ -12,8 +12,8 @@ pages = {
     "git_collab": ("Module 4: Collaborating on GitHub", git_collab.run),
     "git_contrib": ("Module 5: Contributing code", git_contrib.run),
     "config_env": ("Module 6: Prepare environment to run notebook", config_env.run),
-    "run_nb": ("Module 7: Run an existing notebook", run_nb.run),
-    "ide":    ("Module 8: Developing in your IDE", ide.run),
+    "ide":    ("Module 7: Running a Jupyter notebook", ide.run),
+    "moreide":    ("Module 8: VSCode tips and tricks", vscode_tips.run),
     "data_access": ("Under construction Module 9: Simple data access", data_access.run),
     "cimes_internship": ("BONUS: CIMES Summer Internship 2026", cimes_internship.run),
 }
