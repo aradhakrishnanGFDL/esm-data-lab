@@ -21,6 +21,21 @@ def run():
     2. Click the green **Code** button  
     3. Copy the URL under **HTTPS** (or SSH) and use it for the next part
     """)
+
+    st.markdown("""
+    ### Watch Your Repository
+
+    Stay informed when activity happens in your repository.
+
+    1. Open your repository's main page on GitHub
+    2. In the upper-right corner, click **Watch**
+    3. Select **All Activity**
+
+    This allows GitHub to send notifications when changes, issues, pull requests, and other activity occur in your repository.
+    """)
+
+    st.success("Once 'Watch → All Activity' is enabled, you'll receive notifications about repository activity.")
+
     st.header("Reflect")
 
     answer = st.radio(
