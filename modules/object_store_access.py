@@ -72,18 +72,18 @@ def run():
     # ══ Hands-on: same steps, two ways ═══════════════════════════════════════
     st.header("Hands-on")
     st.write("""
-        Start with the Arraylake (Icechunk) tab: connect, find the data, open it, and pull a field.
+        Start with the Icechunk tab: open the repository, find the data, open it, and pull a field.
         The second tab will repeat the same steps with other ways of accessing data, for comparison.
     """)
 
-    tab_arraylake, tab_zarr = st.tabs(["Arraylake (Icechunk)", "Zarr & other catalogs"])
+    tab_icechunk, tab_zarr = st.tabs(["Icechunk", "Zarr & other catalogs"])
 
-    # ── Tab A: Arraylake / Icechunk ──────────────────────────────────────────
-    with tab_arraylake:
-        st.caption("Reading the SPEAR ensemble through Arraylake: a login, a catalog, and version history.")
+    # ── Tab A: Icechunk (via Arraylake or directly) ──────────────────────────
+    with tab_icechunk:
+        st.caption("Reading the SPEAR ensemble from an Icechunk repository. You can reach it through Arraylake or directly with Icechunk.")
 
-        st.subheader("1. Connect to the repository")
-        st.write("Set your token as an environment variable before starting Python or Jupyter:")
+        st.subheader("1. Open the Icechunk repository")
+        st.write("**Option A: through Arraylake.** Set your token as an environment variable before starting Python or Jupyter:")
         st.code('export ARRAYLAKE_TOKEN="your-token-here"', language="bash")
         st.warning("Treat your token like a password. Never paste it into a notebook or share it in chat.")
         st.write("Then connect to the repo and open a read-only session on the `main` branch:")
@@ -97,7 +97,20 @@ client = Client()                       # auth from ARRAYLAKE_TOKEN
 repo = client.get_repo(ARRAYLAKE_REPO)
 session = repo.readonly_session(branch=ARRAYLAKE_BRANCH)
         """, language="python")
-        st.write("`session.store` is what xarray and zarr use to read from the cloud. Nothing has been downloaded yet.")
+        st.write("""
+            **Option B: directly with Icechunk.** Icechunk works on its own. Instead of asking Arraylake
+            for the repo by name, you point Icechunk at where the data is stored:
+        """)
+        st.code("""
+import icechunk
+
+# TODO: bucket and prefix of the SPEAR Icechunk repo, and how to authenticate
+storage = icechunk.s3_storage(bucket="<bucket>", prefix="<prefix>", from_env=True)
+repo = icechunk.Repository.open(storage)
+session = repo.readonly_session("main")
+        """, language="python")
+        st.caption("Needs `pip install icechunk`. Learn more: [Icechunk how-to](https://icechunk.io/en/latest/getting-started/howto/)")
+        st.write("Either way, you end up with a `session`. `session.store` is what xarray and zarr use to read from the cloud, and nothing has been downloaded yet.")
         st.write("Because you read from a branch, everyone reading `main` sees the same version of the data.")
 
         st.subheader("2. Find the data")
@@ -151,7 +164,7 @@ global mean: 280.28509521484375
         st.write("Because the data is chunked by month and member, this fetches a single map instead of the whole archive.")
 
         st.subheader("5. Try it yourself")
-        st.write("Run this in a terminal or Jupyter session with `ARRAYLAKE_TOKEN` set:")
+        st.write("This cell uses Option A. Run it in a terminal or Jupyter session with `ARRAYLAKE_TOKEN` set:")
         st.code("""
 import warnings
 warnings.filterwarnings("ignore")  # zarr codec-config warnings are noise here
