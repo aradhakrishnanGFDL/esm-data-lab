@@ -15,7 +15,7 @@ pages = {
     "ide":    ("Module 7: Running a Jupyter notebook", ide.run),
     "moreide":    ("Module 8: VSCode tips and tricks", vscode_tips.run),
     "data_access": ("Under construction Module 9: Simple data access", data_access.run),
-    "cimes_internship": ("BONUS: CIMES Summer Internship 2026", cimes_internship.run),
+    "array_cloud_Access": ("Under construction Module 10: Arraylake data access") 
 }
 
 # --- Read URL param ---
