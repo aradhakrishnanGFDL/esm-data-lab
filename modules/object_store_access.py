@@ -99,7 +99,7 @@ session = repo.readonly_session(branch=ARRAYLAKE_BRANCH)
         """, language="python")
         st.write("""
             **Option B: directly with Icechunk.** Icechunk works on its own. Instead of asking Arraylake
-            for the repo by name, you point Icechunk at where the data is stored:
+            for the repo by name, you point Icechunk at where the data is stored. This option is useful if your icechunks are not hosted in Arraylake.
         """)
         st.code("""
 import icechunk
