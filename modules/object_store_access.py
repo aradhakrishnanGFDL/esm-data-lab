@@ -27,9 +27,11 @@ def run():
     st.write("""
         Arraylake lets you read large earth system model datasets straight from the cloud — no files to
         copy, no server path to remember. By the end of this module you'll be able to connect
-        to the SPEAR large ensemble, open it with xarray, and pull a field into memory.
+        to the SPEAR large ensemble through Arraylake, open it with xarray, and pull a field into memory.
+        We also compare this with other ways of accessing the same kind of data.
     """)
-    st.info("Make sure the packages are installed: `pip install arraylake xarray zarr`")
+    # TODO: link to the environment module once it exists
+    st.info("Make sure the packages are installed: `pip install arraylake xarray zarr`. New to Python environments? See the environment module for more info.")
 
     # ══ Main section: Why Arraylake? ═════════════════════════════════════════
     st.header("Why Arraylake?")
@@ -46,9 +48,10 @@ def run():
         chunks (chunking), so you only fetch the chunks you ask for, and the data can live in cloud storage.
     """)
     st.write("""
-        **Icechunk: our example.** Icechunk is a free, open-source tool built on Zarr. It adds
+        **Icechunk: our first example.** Icechunk is a free, open-source tool built on Zarr. It adds
         safe updates (ACID transactions) and a version history (snapshots, branches, tags), so you
-        can go back to the data as it was earlier. Icechunk is the one we focus on in this module.
+        can go back to the data as it was earlier. We start with Icechunk, but it isn't the only way
+        to access data, and we compare other ways in this module.
     """)
     st.write("""
         **Arraylake: the way in.** Arraylake is Earthmover's managed platform built on Icechunk.
@@ -69,8 +72,8 @@ def run():
     # ══ Hands-on: same steps, two ways ═══════════════════════════════════════
     st.header("Hands-on")
     st.write("""
-        The steps are the same in both tabs: connect, find the data, open it, and pull a field.
-        What changes is how you get to the data. Try both and compare.
+        Start with the Arraylake (Icechunk) tab: connect, find the data, open it, and pull a field.
+        The second tab will repeat the same steps with other ways of accessing data, for comparison.
     """)
 
     tab_arraylake, tab_zarr = st.tabs(["Arraylake (Icechunk)", "Zarr & other catalogs"])
@@ -170,9 +173,10 @@ print(da.shape, "global mean:", float(np.nanmean(da.values)), da.attrs["units"])
 
     # ── Tab B: Zarr & other catalogs ─────────────────────────────────────────
     with tab_zarr:
-        st.info("TODO: this tab is coming soon.")
+        st.info("TODO: NetCDF and Zarr access are coming soon.")
         # TODO: same five steps as the Arraylake tab (connect, find the data, open, pull a field, try it yourself)
-        # TODO: add the public SPEAR Zarr location
+        # TODO: NetCDF access (public bucket location, open_dataset / open_mfdataset)
+        # TODO: Zarr access (public bucket location, open_zarr)
         # TODO: decide which other catalog(s) to compare
         # TODO: add a short "What's different from Arraylake?" comparison
 
