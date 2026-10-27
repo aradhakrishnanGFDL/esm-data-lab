@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_access
+from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_access, arraylake_cloud_access
 
 st.sidebar.title("Course Modules")
 
@@ -15,7 +15,7 @@ pages = {
     "ide":    ("Module 7: Running a Jupyter notebook", ide.run),
     "moreide":    ("Module 8: VSCode tips and tricks", vscode_tips.run),
     "data_access": ("Under construction Module 9: Simple data access", data_access.run),
-    "array_cloud_Access": ("Under construction Module 10: Arraylake data access") 
+    "arraylake_cloud_access": ("Under construction Module 10: Arraylake data access",arralake_cloud_access.run) 
 }
 
 # --- Read URL param ---
@@ -36,6 +36,7 @@ selected_key = keys[labels.index(selected_label)]
 
 # --- Update URL when user clicks ---
 st.query_params["module"] = selected_key
+
 
 # --- Render page ---
 name, func = pages[selected_key]
