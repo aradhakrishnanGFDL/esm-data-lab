@@ -76,7 +76,7 @@ def run():
         The second tab will repeat the same steps with other ways of accessing data, for comparison.
     """)
 
-    tab_icechunk, tab_zarr = st.tabs(["Icechunk", "Zarr & other catalogs"])
+    tab_icechunk, tab_zarr = st.tabs(["Icechunk", "Other")
 
     # ── Tab A: Icechunk (via Arraylake or directly) ──────────────────────────
     with tab_icechunk:
