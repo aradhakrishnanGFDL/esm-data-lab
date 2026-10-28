@@ -48,7 +48,7 @@ def run():
 | If you want to... | Use |
 |---|---|
 | Search CMIP6-style model output that is already in the cloud (NetCDF or Zarr) | **intake-esm** |
-| Find CMIP6 data through ESGF, with files downloaded and cached locally | **intake-esgf** (examples coming soon) |
+| Find CMIP7 data through ESGF, with files downloaded and cached locally | **intake-esgf** (examples coming soon) |
 | Read data in an Arraylake repository, such as SPEAR, or share your own data with your team | **Arraylake** |
 | Search satellite imagery and other geospatial data | **STAC** (coming soon) |
     """)
