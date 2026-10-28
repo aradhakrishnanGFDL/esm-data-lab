@@ -4,8 +4,7 @@ import streamlit as st
 def run():
     st.title("Scientific Data Formats: The Basics")
     st.write(
-        "How do large volumes of earth system model data is structured? From traditional data formats to scalable, chunked data formats (efficient, performant) in platforms that bring analysis to the data (no-downloads) - this module will give a basic background on all this. 
-        Enjoy learning!"
+        "How do large volumes of earth system model data is structured? From traditional data formats to scalable, chunked data formats (efficient, performant) in platforms that bring analysis to the data (no-downloads) - this module will give a basic background on all this. Enjoy learning!"
         )
     )
     st.info(
