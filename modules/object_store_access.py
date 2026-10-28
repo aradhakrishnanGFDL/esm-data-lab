@@ -183,6 +183,11 @@ print(da.shape, da.attrs.get("units"))
 print("global mean:", float(da.mean()))
                 """, language="python")
                 st.write("`.squeeze()` drops dimensions of length 1, such as the single ensemble member we asked for.")
+                st.info(""".squeeze()` removes dimensions of length 1. It changes the shape, not the data.
+
+    - before: `(member_id: 1, y: 576, x: 720)`
+    - after: `(y: 576, x: 720)`
+""")
 
             # ── Zarr ─────────────────────────────────────────────────────────
             with tab_zarr:
