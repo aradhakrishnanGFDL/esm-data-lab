@@ -4,8 +4,9 @@ import streamlit as st
 def run():
     st.title("Scientific Data Formats: The Basics")
     st.write(
-        "How do scientists store huge amounts of climate data—and work with it "
-        "without downloading everything?"
+        "How do large volumes of earth system model data is structured? From traditional data formats to scalable, chunked data formats (efficient, performant) in platforms that bring analysis to the data (no-downloads) - this module will give a basic background on all this. 
+        Enjoy learning!"
+        )
     )
     st.info(
         "**In this module:** meet NetCDF, Zarr, Icechunk, and VirtualiZarr. "
@@ -15,7 +16,7 @@ def run():
     # 1. Start with the data
     st.header("1. What does scientific data look like?")
     st.write(
-        "Imagine a climate scientist wants to study temperature around the "
+        "Imagine a researcher wants to study temperature around the "
         "world over many years."
     )
     st.code("temperature(time, latitude, longitude)", language="text")
@@ -38,6 +39,27 @@ def run():
             "Attributes describe a variable or the dataset as a whole."
         )
 
+    # ── A quick analogy: Rubik's Cube ─────────────────────────────
+    st.header("A quick analogy: a Rubik's Cube")
+
+    st.write("""
+    Imagine a Rubik's Cube with many small cubes arranged in layers.
+    Scientific data can also be organized across multiple dimensions.
+    """)
+
+    st.markdown("""
+    - **Data cube:** The entire Rubik's Cube represents the full dataset,
+      with dimensions such as *time*, *latitude*, and *longitude*.
+    - **Zarr chunks:** One or more small cubes represent a chunk of data
+      stored and retrieved together.
+    - **Object store:** A storage space holding these chunks as separate
+      objects, each of which can be retrieved when needed. This storage space can be platforms such as commercial or institutional non-commercial research cloud. It's the object store interface that is important here!
+    """)
+
+    st.info(
+        "Instead of downloading the entire dataset, we can retrieve only "
+        "the Zarr chunks needed for our analysis."
+    )
     # 2. NetCDF
     st.header("2. NetCDF: a labeled notebook")
     st.write(
@@ -108,7 +130,7 @@ def run():
     # 6. Growing data
     st.header("6. Why does this matter for big data?")
     st.write(
-        "Imagine **30 climate-model ensemble members**, each producing daily "
+        "Imagine **30 earth-system-model ensemble members**, each producing daily "
         "data for **100 years**. Add more variables and experiments, and the "
         "collection can grow to terabytes or more."
     )
@@ -124,7 +146,7 @@ def run():
         - **HPC:** high-performance computing systems, often with shared or
           parallel filesystems.
         - **Institutional or research cloud:** storage and computing managed by
-          a research organization.
+          a research organization. Note that this can also provide object store access!
         - **Commercial cloud:** services that commonly provide object storage
           through network APIs.
 
