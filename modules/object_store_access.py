@@ -73,7 +73,7 @@ def run():
     st.header("Hands-on")
     st.write("""
         Start with the Icechunk tab: open the repository, find the data, open it, and pull a field.
-        The second tab will repeat the same steps with other ways of accessing data, for comparison.
+        The second tab will repeat the same steps with NetCDF data and other catalogs, for comparison.
     """)
 
     tab_icechunk, tab_zarr = st.tabs(["Icechunk", "Other"])
