@@ -18,46 +18,32 @@ DONE_HTML = """
     padding: 12px 0;
   }
 </style>
-<div class="msg">☁️ You're pulling data from the cloud like a pro!</div>
+<div class="msg">☁️ You're finding and pulling cloud data like a pro!</div>
 """
 
 
 def run():
-    st.title("Cloud Data Access with Arraylake")
+    st.title("Finding Cloud Data: Catalogs and Arraylake")
     st.write("""
-        Arraylake lets you read large earth system model datasets straight from the cloud — no files to
-        copy, no server path to remember. By the end of this module you'll be able to connect
-        to the SPEAR large ensemble through Arraylake, open it with xarray, and pull a field into memory.
-        We also compare this with other ways of accessing the same kind of data.
+        Reading data from the cloud is easy once you know where it is. The harder part is finding it.
+        In this module you'll use two kinds of catalogs: intake-esm, to search CMIP6 model output,
+        and Arraylake, to browse the SPEAR large ensemble.
     """)
     # TODO: link to the environment module once it exists
-    st.info("Make sure the packages are installed: `pip install arraylake xarray zarr`. New to Python environments? See the environment module for more info.")
+    st.info("Make sure the packages are installed: `pip install intake-esm arraylake xarray zarr s3fs`. New to Python environments? See the environment module for more info.")
 
-    # ══ Main section: Why Arraylake? ═════════════════════════════════════════
-    st.header("Why Arraylake?")
+    # ══ Main section: Why catalogs? ══════════════════════════════════════════
+    st.header("Why catalogs?")
     st.write("""
-        **The problem.** Earth system model output is too big to keep downloading and copying around.
-        Instead, we want to bring the analysis to the data. That means:
-    """)
-    st.write("- **No download** (lazy loading, streaming) — read only the piece you need")
-    st.write("- **Analysis comes to the data** (cloud-native) — your code works on the data where it lives, in the cloud")
-    st.write("- **Fast** (chunking, parallel reads) — reading a small piece shouldn't mean loading everything")
-    st.write("- **Versioned** (snapshots, tags) — know exactly which version of the data you used, so results can be reproduced")
-    st.write("""
-        **The solution.** Cloud-optimized formats like Zarr save big arrays in small pieces called
-        chunks (chunking), so you only fetch the chunks you ask for, and the data can live in cloud storage.
+        **The problem.** Cloud datasets are huge and there are many of them. Before you can read anything,
+        you need to know: What datasets exist? Where is each one stored? How do I open it?
     """)
     st.write("""
-        **Icechunk: our first example.** Icechunk is a free, open-source tool built on Zarr. It adds
-        safe updates (ACID transactions) and a version history (snapshots, branches, tags), so you
-        can go back to the data as it was earlier. We start with Icechunk, but it isn't the only way
-        to access data, and we compare other ways in this module.
+        **The solution.** A **catalog** is a searchable list of datasets and where to find them.
+        You search it, and it gives you what you need to open the data.
     """)
-    st.write("""
-        **Arraylake: the way in.** Arraylake is Earthmover's managed platform built on Icechunk.
-        It gives you a catalog for finding datasets and a way to share them, and you read them from
-        Python with your Arraylake login.
-    """)
+    st.write("- **intake-esm** — a catalog for earth system model output like CMIP6. You search by model, experiment and variable, and get xarray datasets back.")
+    st.write("- **Arraylake** — Earthmover's managed platform, built on Icechunk. It gives you a catalog for finding datasets and a way to share them. You log in, browse a repository, and read from the cloud.")
     st.write("""
         The cloud storage where the data sits is called an **object store**.
         New to object stores? See the intro to object stores module (coming soon).
@@ -65,24 +51,80 @@ def run():
     # TODO: link to the object store intro module once it exists
     st.caption(
         "Learn more: [Arraylake documentation](https://docs.earthmover.io/) · "
-        "[Icechunk: Arraylake](https://icechunk.io/en/stable/arraylake/) · "
-        "[Why Icechunk?](https://icechunk.io/en/stable/overview/)"
+        "[Pangeo: accessing CMIP6 in the cloud](https://pangeo-data.github.io/pangeo-cmip6-cloud/accessing_data.html)"
     )
 
-    # ══ Hands-on: same steps, two ways ═══════════════════════════════════════
+    # ══ Hands-on ═════════════════════════════════════════════════════════════
     st.header("Hands-on")
     st.write("""
-        Start with the Icechunk tab: open the repository, find the data, open it, and pull a field.
-        The second tab will repeat the same steps with NetCDF data and other catalogs, for comparison.
+        Pick a tab. The steps are the same in each: open the catalog, find the data, open it, and pull a field.
     """)
 
-    tab_icechunk, tab_zarr = st.tabs(["Icechunk", "Other"])
+    tab_intake, tab_arraylake = st.tabs(["intake-esm (CMIP6)", "Arraylake (SPEAR)"])
 
-    # ── Tab A: Icechunk (via Arraylake or directly) ──────────────────────────
-    with tab_icechunk:
-        st.caption("Reading the SPEAR ensemble from an Icechunk repository. You can reach it through Arraylake or directly with Icechunk.")
+    # ── Tab A: intake-esm ────────────────────────────────────────────────────
+    with tab_intake:
+        st.caption("Searching CMIP6 model output (NetCDF files in a public bucket) with intake-esm. No login needed.")
 
-        st.subheader("1. Open the Icechunk repository")
+        st.subheader("1. Open the catalog")
+        st.code("""
+import intake
+
+col_url = "https://raw.githubusercontent.com/aradhakrishnanGFDL/gfdl-aws-analysis/master/esm-collection-spec-examples/esgf-world.json"
+col = intake.open_esm_datastore(col_url)
+        """, language="python")
+        st.write("Opening the catalog reads a table describing the available datasets, not the data itself.")
+
+        st.subheader("2. Find the data")
+        st.write("Describe what you want, and search. Here: monthly ocean sea surface temperature (`tos`) from GFDL-ESM4.")
+        st.code("""
+query = dict(
+    source_id=["GFDL-ESM4"],
+    experiment_id=["historical"],
+    table_id=["Omon"],
+    member_id=["r1i1p1f1"],
+    grid_label=["gn"],
+    variable_id=["tos"],
+)
+
+cat = col.search(**query)
+cat = cat.search(version=cat.df.version.max())   # keep only the latest version
+print(len(cat.df), "files found")
+        """, language="python")
+
+        st.subheader("3. Open the data")
+        st.code("""
+dset_dict = cat.to_dataset_dict(
+    storage_options=dict(anon=True),
+    cdf_kwargs={"decode_times": True, "chunks": {"time": 1}},
+)
+print(list(dset_dict))
+
+ds = dset_dict["CMIP6.NOAA-GFDL.GFDL-ESM4.historical.Omon"]
+        """, language="python")
+        st.write("intake-esm returns a dictionary of xarray datasets, named by project, institution, model, experiment and table.")
+        st.info("The datasets are lazy: data only downloads when you call `.load()`, `.values`, or plot.")
+
+        st.subheader("4. Pull a field into memory")
+        st.code("""
+da = ds["tos"].isel(member_id=0, time=0).load()
+
+print(da.shape, da.attrs.get("units"))
+print("global mean:", float(da.mean()))
+        """, language="python")
+
+        st.info("""
+            Same pattern with Zarr: intake-esm also works with catalogs of Zarr data, like Pangeo's
+            CMIP6 catalog (`https://cmip6-pds.s3.amazonaws.com/pangeo-cmip6.json`). The search is the same,
+            and opening uses `zarr_kwargs={"consolidated": True}` instead of `cdf_kwargs`.
+        """)
+        # TODO: add a tested Zarr cell for intake-esm
+
+    # ── Tab B: Arraylake ─────────────────────────────────────────────────────
+    with tab_arraylake:
+        st.caption("Browsing the SPEAR large ensemble in an Arraylake repository. A login is required.")
+
+        st.subheader("1. Open the repository")
         st.write("**Option A: through Arraylake.** Set your token as an environment variable before starting Python or Jupyter:")
         st.code('export ARRAYLAKE_TOKEN="your-token-here"', language="bash")
         st.warning("Treat your token like a password. Never paste it into a notebook or share it in chat.")
@@ -99,22 +141,22 @@ session = repo.readonly_session(branch=ARRAYLAKE_BRANCH)
         """, language="python")
         st.write("""
             **Option B: directly with Icechunk.** Icechunk works on its own. Instead of asking Arraylake
-            for the repo by name, you point Icechunk at where the data is stored. This option is useful if your icechunks are not hosted in Arraylake.
+            for the repo by name, you point Icechunk at where the data is stored. This option is useful
+            if your Icechunk repos are not hosted in Arraylake.
         """)
         st.code("""
 import icechunk
 
-# TODO: bucket and prefix of the SPEAR Icechunk repo, and how to authenticate
+# TODO: bucket and prefix of the Icechunk repo, and how to authenticate
 storage = icechunk.s3_storage(bucket="<bucket>", prefix="<prefix>", from_env=True)
 repo = icechunk.Repository.open(storage)
 session = repo.readonly_session("main")
         """, language="python")
         st.caption("Needs `pip install icechunk`. Learn more: [Icechunk how-to](https://icechunk.io/en/latest/getting-started/howto/)")
         st.write("Either way, you end up with a `session`. `session.store` is what xarray and zarr use to read from the cloud, and nothing has been downloaded yet.")
-        st.write("Because you read from a branch, everyone reading `main` sees the same version of the data.")
 
         st.subheader("2. Find the data")
-        st.write("The data is organized as `<experiment>/<table>`. Use zarr to see what's there:")
+        st.write("Instead of searching, you browse the repository. The data is organized as `<experiment>/<table>`:")
         st.code("""
 import zarr
 
@@ -132,7 +174,7 @@ scenarioSSP5-85  ['6hr', 'Amon', 'Ofx', 'Omon', 'day', 'fx']
             `Amon` is monthly atmosphere data, which is what we'll use here.
         """)
 
-        st.subheader("3. Open a group with xarray")
+        st.subheader("3. Open the data")
         st.code("""
 import xarray as xr
 
@@ -145,7 +187,6 @@ print(dict(ds.sizes))
 {'member_id': 30, 'time': 1128, 'plev': 17, 'lat': 360, 'lon': 576, ...}
         """, language="text")
         st.info("`consolidated=False` is required for Icechunk stores. The Dataset is lazy: data only downloads when you call `.load()`, `.values`, or plot.")
-        st.write("There are 30 ensemble members (`member_id`) and 1128 monthly time steps in this group.")
 
         st.subheader("4. Pull a field into memory")
         st.write("Select with labels, then `.load()` to fetch just that piece — here, one member, one month, the whole globe:")
@@ -161,69 +202,40 @@ print("global mean:", float(np.nanmean(da.values)))
 (360, 576) K
 global mean: 280.28509521484375
         """, language="text")
-        st.write("Because the data is chunked by month and member, this fetches a single map instead of the whole archive.")
-
-        st.subheader("5. Try it yourself")
-        st.write("This cell uses Option A. Run it in a terminal or Jupyter session with `ARRAYLAKE_TOKEN` set:")
-        st.code("""
-import warnings
-warnings.filterwarnings("ignore")  # zarr codec-config warnings are noise here
-
-from arraylake import Client
-import numpy as np
-import xarray as xr
-
-client = Client()                                  # auth from ARRAYLAKE_TOKEN
-repo = client.get_repo("GFDL/noaa-gfdl-spear-large-ensembles-pds")
-session = repo.readonly_session(branch="main")
-
-ds = xr.open_zarr(session.store, group="historical/Amon", consolidated=False)
-
-da = ds["tas"].sel(member_id="r1i1p1f1", time="2000-07").isel(time=0).load()
-print(da.shape, "global mean:", float(np.nanmean(da.values)), da.attrs["units"])
-        """, language="python")
         st.info("If you get an authentication error, check that `ARRAYLAKE_TOKEN` is set in the same terminal or kernel you're running from.")
 
-    # ── Tab B: Zarr & other catalogs ─────────────────────────────────────────
-    with tab_zarr:
-        st.info("TODO: NetCDF and Zarr access are coming soon.")
-        # TODO: same five steps as the Arraylake tab (connect, find the data, open, pull a field, try it yourself)
-        # TODO: NetCDF access (public bucket location, open_dataset / open_mfdataset)
-        # TODO: Zarr access (public bucket location, open_zarr)
-        # TODO: decide which other catalog(s) to compare
-        # TODO: add a short "What's different from Arraylake?" comparison
+    # ══ Try it yourself ══════════════════════════════════════════════════════
+    st.header("Try it yourself")
+    st.write("""
+        Run the code blocks from one tab in order in a terminal or Jupyter session. They build on each other.
+        For the Arraylake tab, set `ARRAYLAKE_TOKEN` first.
+    """)
 
     # ══ Dig deeper ═══════════════════════════════════════════════════════════
     st.info("""
-        **Did you know?** You don't have to rewrite your NetCDF files to use Icechunk and Zarr.
-        A tool called VirtualiZarr can create a "virtual" dataset that points to the data inside
-        your existing files, without copying or modifying them. Curious? Ask us about VirtualiZarr
-        and we'll add a module on it.
+        **Did you know?** intake-esm and Arraylake are not the only catalogs. Others, such as STAC,
+        are used across the earth sciences. Curious? Ask us about STAC and we'll add a module on it.
     """)
 
     with st.expander("Dig deeper: references"):
         st.markdown("""
-**Concepts**
-- [Zarr](https://zarr.dev/) — the array format (chunking)
-- [Why Icechunk?](https://icechunk.io/en/stable/overview/) — ACID transactions and version history
-- [Icechunk core concepts](https://icechunk.io/en/stable/understanding/concepts/) — transactions, snapshots, branches, tags, chunks
-- [Icechunk FAQ](https://icechunk.io/en/latest/faq/)
+**Catalogs and CMIP6**
+- [Pangeo: accessing CMIP6 in the cloud](https://pangeo-data.github.io/pangeo-cmip6-cloud/accessing_data.html) — intake-esm and Zarr examples
+- [CMIP6 on AWS (Registry of Open Data)](https://registry.opendata.aws/cmip6)
+- [The esgf-world catalog used above](https://raw.githubusercontent.com/aradhakrishnanGFDL/gfdl-aws-analysis/master/esm-collection-spec-examples/esgf-world.json)
 
 **Arraylake**
 - [Arraylake documentation](https://docs.earthmover.io/)
 - [Icechunk and Arraylake](https://icechunk.io/en/stable/arraylake/)
 - [Authentication and API tokens](https://docs.earthmover.io/setup/org-access)
+- [Why Icechunk?](https://icechunk.io/en/stable/overview/)
 
 **Reading the data**
 - [xarray.open_zarr](https://docs.xarray.dev/en/latest/generated/xarray.open_zarr.html) — opening a Zarr store (lazy loading)
 
-**The dataset**
+**The SPEAR dataset**
 - [GFDL SPEAR Large Ensembles](https://www.gfdl.noaa.gov/?p=79810)
 - [Delworth et al. (2020), SPEAR model description](https://doi.org/10.1029/2019MS001895)
-
-**Working with existing NetCDF files**
-- [VirtualiZarr](https://virtualizarr.readthedocs.io/)
-- [Icechunk virtual datasets](https://icechunk.io/en/stable/guides/virtual/)
         """)
 
     # ── Reflect ──────────────────────────────────────────────────────────────
@@ -231,15 +243,15 @@ print(da.shape, "global mean:", float(np.nanmean(da.values)), da.attrs["units"])
     st.info("This is just for you — your responses are not saved.")
 
     understood = st.radio(
-        "Did the idea of lazy loading (nothing downloads until `.load()`) make sense?",
+        "Did the difference between searching a catalog (intake-esm) and browsing a repository (Arraylake) make sense?",
         ["Yes", "Somewhat", "Not yet"],
         index=None,
     )
-    completed = st.checkbox("I ran the code and successfully loaded a field from the Arraylake repo")
+    completed = st.checkbox("I ran the code from at least one tab and loaded a field")
 
     if understood and completed:
         if understood == "Not yet":
-            st.markdown("Take another look at steps 3 and 4 in the Hands-on section — try printing `ds['tas']` before and after calling `.load()` to see the difference.")
+            st.markdown("Take another look at steps 2 and 3 in each tab — try printing what the search or the repository browse returns.")
         else:
             st.components.v1.html(DONE_HTML, height=60)
     elif understood or completed:
