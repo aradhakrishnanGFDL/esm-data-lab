@@ -14,8 +14,8 @@ pages = {
     "config_env": ("Module 6: Prepare environment to run notebook", config_env.run),
     "ide":    ("Module 7: Running a Jupyter notebook", ide.run),
     "moreide":    ("Module 8: VSCode tips and tricks", vscode_tips.run),
-    "data_access": ("Under construction Module 9: Simple data access", data_access.run),
-    "object_store_access": ("Under construction Module 10: Arraylake data access",object_store_access.run) 
+    "data": ("Module 9: Common Data formats, data.run),
+    "object_store_access": ("Finding data",object_store_access.run) 
 }
 
 # --- Read URL param ---
