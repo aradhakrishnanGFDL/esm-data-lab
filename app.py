@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_format, data, object_store_access 
+from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_format, data, object_store_access, batch
 
 st.sidebar.title("Course Modules")
 
@@ -12,11 +12,12 @@ pages = {
     "git_collab": ("Module 4: Collaborating on GitHub", git_collab.run),
     "git_contrib": ("Module 5: Contributing code", git_contrib.run),
     "config_env": ("Module 6: Prepare environment to run notebook", config_env.run),
-    "ide":    ("Module 7: Running a Jupyter notebook", ide.run),
-    "moreide":    ("Module 8: VSCode tips and tricks", vscode_tips.run),
-    "data_format": ("Module 9: Common Data formats", data_format.run),
-    "data": ("Module 10: Simple data access", data.run),
-    "object_store_access": ("Module 11: Finding data",object_store_access.run) 
+    "ide": ("Module 7: Running a Jupyter notebook", ide.run),
+    "batch":  ("Module 8: Jupyter notebook in batch mode", batch.run),
+    "moreide":    ("Module 9: VSCode tips and tricks", vscode_tips.run),
+    "data_format": ("Module 10: Common Data formats", data_format.run),
+    "data": ("Module 11: Simple data access", data.run),
+    "object_store_access": ("Module 12: Finding data",object_store_access.run) 
 }
 
 # --- Read URL param ---
