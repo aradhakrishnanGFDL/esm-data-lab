@@ -1,220 +1,477 @@
+
 import streamlit as st
 
 
-DONE_HTML = """
-<style>
-  body { margin: 0; background: transparent; }
-  @keyframes fadein {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .msg {
-    font-family: sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #2e7d32;
-    animation: fadein 0.8s ease forwards;
-    opacity: 0;
-    padding: 12px 0;
-  }
-</style>
-<div class="msg">You know your data formats!</div>
-"""
-
-
-def _grid(hits):
-    """A 5 x 4 grid of chunks; the chunks in `hits` are highlighted."""
-    cells = "".join(
-        f'<div class="hit"></div>' if i in hits else "<div></div>" for i in range(20)
-    )
-    return f'<div class="grid">{cells}</div>'
-
-
-VISUAL_HTML = f"""
-<style>
-  body {{ margin: 0; font-family: sans-serif; background: transparent; }}
-  .row {{ display: flex; gap: 12px; }}
-  .card {{ flex: 1; background: #f5f7fa; color: #222; border-radius: 10px; padding: 12px; text-align: center; }}
-  .card h4 {{ margin: 0 0 8px 0; }}
-  .file {{ height: 90px; background: #90a4ae; border-radius: 6px; display: flex;
-          align-items: center; justify-content: center; color: #fff; font-weight: 700; }}
-  .grid {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; height: 90px; }}
-  .grid div {{ background: #b0bec5; border-radius: 3px; }}
-  .grid .hit {{ background: #2e7d32; }}
-  .snaps {{ margin-top: 6px; font-size: 12px; }}
-  .snaps span {{ background: #1565c0; color: #fff; border-radius: 10px; padding: 2px 8px; margin: 0 2px; }}
-  .cap {{ font-size: 13px; margin-top: 8px; }}
-</style>
-<div class="row">
-  <div class="card">
-    <h4>NetCDF</h4>
-    <div class="file">one file</div>
-    <div class="cap">Designed for files on disk. Common for model output.</div>
-  </div>
-  <div class="card">
-    <h4>Zarr</h4>
-    {_grid({7, 8})}
-    <div class="cap">Many small chunks. Read only the <b style="color:#2e7d32">green</b> ones you need.</div>
-  </div>
-  <div class="card">
-    <h4>Icechunk</h4>
-    {_grid({7, 8})}
-    <div class="snaps"><span>v1</span>→<span>v2</span>→<span>v3</span></div>
-    <div class="cap">Zarr plus safe updates and version history.</div>
-  </div>
-</div>
-"""
-
-QUIZ = [
-    (
-        "What does chunking let you do?",
-        ["Read only the pieces you need", "Make files smaller on disk", "Rename variables automatically"],
-        "Read only the pieces you need",
-        "Zarr saves arrays in small chunks, so you only fetch the chunks you ask for.",
-    ),
-    (
-        "Which format adds version history (snapshots, branches, tags)?",
-        ["NetCDF", "Zarr", "Icechunk"],
-        "Icechunk",
-        "Icechunk is built on Zarr and adds safe updates and version history.",
-    ),
-    (
-        "You want to rerun your analysis next year on exactly the same data. What helps most?",
-        ["Download a fresh copy each time", "Note the Icechunk snapshot or tag you used", "Rerun it with a Zarr store"],
-        "Note the Icechunk snapshot or tag you used",
-        "Icechunk keeps a version history, so you can open exactly the version you used before.",
-    ),
-]
-
-
 def run():
-    st.title("Intro to Data Formats: NetCDF, Zarr, Icechunk")
-    st.write("""
-        Earth system model output comes in different formats, and the format decides how easily you can read it
-        from the cloud, share it, and reproduce your results. By the end of this module you'll be able to say
-        what each format is for, and you'll have tried all three yourself.
-    """)
+    st.title("Introduction to Data Formats")
 
-    st.markdown("**How to use this module:** look at the picture and table, run the four cells in the exercise, then take the quiz.")
+    st.write(
+        "Earth system models produce large amounts of data. "
+        "They simulate variables such as temperature, rainfall, winds, "
+        "and ocean conditions over many years. Scientists often run "
+        "models multiple times to create an ensemble, helping them "
+        "understand a range of possible Earth system outcomes."
+    )
 
-    # ══ The three formats ════════════════════════════════════════════════════
-    st.header("The three formats at a glance")
-    st.components.v1.html(VISUAL_HTML, height=230)
-    st.markdown("""
-| | NetCDF | Zarr | Icechunk |
-|---|---|---|---|
-| **Cloud-optimized** | No (a legacy format) | Yes | Yes |
-| **Read just a few chunks** | — | Yes | Yes |
-| **Version history** | No | No | Yes |
-| **Use it when** | Your data is already in NetCDF files | You want to read pieces of large data from the cloud | Data changes, is shared, or must be reproducible |
-    """)
-    st.info("Icechunk is not a replacement for Zarr. It is built on Zarr and adds safe updates (ACID transactions) and version history (snapshots, branches, tags).")
+    st.info(
+        "In this module, we introduce NetCDF, Zarr, and Icechunk, "
+        "explore why chunking matters, and see how VirtualiZarr "
+        "can help us work with existing NetCDF data."
+    )
 
-    # ══ Hands-on ═════════════════════════════════════════════════════════════
-    st.header("Hands-on")
-    st.write("""
-        Run these cells in order in a Jupyter session or Python terminal. Everything runs locally on a small
-        example dataset, so no login or cloud access is needed.
-    """)
-    # TODO: link to the environment module once it exists
-    st.code("pip install xarray zarr dask netcdf4 pooch icechunk", language="bash")
-    st.caption("New to Python environments? See the environment module for more info.")
+    # ── Step 1 ──────────────────────────────────────────────────────────────
+    st.header("1. Understanding Earth system model data")
 
-    st.subheader(":blue[1. Open a NetCDF file]")
-    st.code("""
+    st.write(
+        "Imagine running an Earth system model three times. Each run "
+        "is an ensemble member. Each member can contain many variables, "
+        "time steps, and locations around the globe."
+    )
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.markdown("**Ensemble member 1**")
+        st.caption("One model run")
+        st.write("Temperature")
+        st.write("Rainfall")
+        st.write("Wind")
+
+    with col2:
+        st.markdown("**Ensemble member 2**")
+        st.caption("Another model run")
+        st.write("Temperature")
+        st.write("Rainfall")
+        st.write("Wind")
+
+    with col3:
+        st.markdown("**Ensemble member 3**")
+        st.caption("Another model run")
+        st.write("Temperature")
+        st.write("Rainfall")
+        st.write("Wind")
+
+    st.caption(
+        "Each ensemble member may contain decades or centuries of "
+        "data, across many variables and spatial locations."
+    )
+
+    st.write(
+        "A temperature dataset, for example, might have three dimensions: "
+        "time, latitude, and longitude. Adding more variables, longer "
+        "simulations, and more ensemble members quickly increases "
+        "the amount of data we need to store and analyse."
+    )
+
+    st.markdown("---")
+
+    # ── Step 2 ──────────────────────────────────────────────────────────────
+    st.header("2. NetCDF: a common format for scientific data")
+
+    st.write(
+        "NetCDF is widely used to store Earth system model output. "
+        "A NetCDF file can contain multidimensional data along with "
+        "useful information such as variable names, units, and coordinates."
+    )
+
+    st.write("For example, a file might contain daily temperature data:")
+
+    st.code(
+        """
+temperature
+    time: 365 days
+    latitude: 180 points
+    longitude: 360 points
+
+units: K
+        """.strip(),
+        language="text",
+    )
+
+    st.caption(
+        "The dimensions above are illustrative. K means kelvin, "
+        "a unit of temperature."
+    )
+
+    st.write("A NetCDF file commonly has the extension `.nc`.")
+
+    st.write("We can use Python's xarray library to open one:")
+
+    st.code(
+        """
 import xarray as xr
 
-ds = xr.tutorial.open_dataset("rasm")   # a small NetCDF file, downloaded for you
+ds = xr.open_dataset("temperature.nc")
+
 print(ds)
-print(list(ds.data_vars))
-    """, language="python")
-    st.write("Look at the dimensions and the data variables. This is the format you already know.")
+print(ds["temperature"])
+        """.strip(),
+        language="python",
+    )
 
-    st.subheader(":blue[2. Save it as Zarr]")
-    st.code("""
-ds.chunk({"time": 1}).to_zarr("rasm.zarr", mode="w")   # one chunk per time step
+    st.caption(
+        "This example assumes that temperature.nc exists in your "
+        "working directory. xarray helps us explore labelled scientific "
+        "datasets without having to manage every array dimension manually."
+    )
 
-ds_zarr = xr.open_zarr("rasm.zarr")
-var = list(ds_zarr.data_vars)[0]
-print(ds_zarr[var].chunks)
+    st.markdown(
+        "[NetCDF documentation](https://www.unidata.ucar.edu/software/netcdf/) "
+        "| [xarray I/O guide](https://docs.xarray.dev/en/stable/user-guide/io.html)"
+    )
 
-one_step = ds_zarr[var].isel(time=0).load()   # reads just one chunk
-print(one_step.shape)
-    """, language="python")
-    st.write("The data is now saved as many small chunks. Reading one time step only reads one chunk.")
+    st.markdown("---")
 
-    st.subheader(":blue[3. Save it as Icechunk, in two versions]")
-    st.code("""
-import tempfile
-import icechunk as ic
-from icechunk.xarray import to_icechunk
+    # ── Step 3 ──────────────────────────────────────────────────────────────
+    st.header("3. Zarr: work with large datasets in smaller pieces")
 
-repo = ic.Repository.create(ic.local_filesystem_storage(tempfile.mkdtemp()))
+    st.write(
+        "Zarr is another format for storing multidimensional arrays. "
+        "It is especially useful for large datasets and workflows that "
+        "access data from cloud or object storage."
+    )
 
-n = ds.sizes["time"] // 2
-part1 = ds.isel(time=slice(None, n))
-part2 = ds.isel(time=slice(n, None))
+    st.write(
+        "One of its key ideas is **chunking**: dividing a large array "
+        "into smaller blocks. This can make it easier to read only "
+        "the data needed for a particular analysis."
+    )
 
-# Version 1: the first half of the data
-session = repo.writable_session("main")
-to_icechunk(part1, session)
-snap1 = session.commit("first half of the data")
+    st.subheader("What does chunking look like?")
 
-# Version 2: add the rest
-session = repo.writable_session("main")
-to_icechunk(part2, session, append_dim="time")
-snap2 = session.commit("add the second half")
-    """, language="python")
-    st.write("Each `commit` saves a snapshot. Nothing was overwritten: version 1 is still there.")
+    st.write(
+        "Imagine a global temperature map. You only want to study "
+        "a small region of the North Atlantic. You may not need to "
+        "read every grid cell in the entire map."
+    )
 
-    st.subheader(":blue[4. Go back in time]")
-    st.code("""
-latest = xr.open_zarr(repo.readonly_session("main").store, consolidated=False)
-v1 = xr.open_zarr(repo.readonly_session(snapshot_id=snap1).store, consolidated=False)
+    st.write("The diagram below illustrates a large array divided into chunks.")
 
-print("latest:   ", latest.sizes["time"], "time steps")
-print("version 1:", v1.sizes["time"], "time steps")
-    """, language="python")
-    st.write("You should see more time steps in the latest version than in version 1. That is version history.")
+    # Illustrative chunk grid; highlighted blocks represent a selected region.
+    for row_idx in range(4):
+        cols = st.columns(8, gap="small")
 
-    completed = st.checkbox("I ran the four cells and saw both versions")
+        for col_idx, col in enumerate(cols):
+            selected = (
+                row_idx in (1, 2)
+                and col_idx in (2, 3, 4)
+            )
 
-    # ══ Quiz ═════════════════════════════════════════════════════════════════
-    st.header("Quiz")
-    st.info("This is just for you — your responses are not saved.")
+            with col:
+                if selected:
+                    st.markdown(
+                        """
+                        <div style="
+                            background-color: #F4A261;
+                            border: 1px solid white;
+                            border-radius: 4px;
+                            padding: 12px 0;
+                            text-align: center;
+                            color: #222222;
+                            font-size: 11px;">
+                            Selected
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+                else:
+                    st.markdown(
+                        """
+                        <div style="
+                            background-color: #D9EAF7;
+                            border: 1px solid white;
+                            border-radius: 4px;
+                            padding: 12px 0;
+                            text-align: center;
+                            color: #23415A;
+                            font-size: 11px;">
+                            Chunk
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
 
-    correct = 0
-    for i, (question, options, answer, why) in enumerate(QUIZ):
-        choice = st.radio(question, options, index=None, key=f"formats_quiz_{i}")
-        if choice is not None:
-            if choice == answer:
-                st.success(f"Correct. {why}")
-                correct += 1
+    st.caption(
+        "Illustration only: highlighted chunks represent the region "
+        "of interest. Actual chunk shapes and sizes depend on the dataset."
+    )
+
+    st.write(
+        "Chunking can reduce unnecessary data access, but the benefit "
+        "depends on how the data is organised. If chunks are poorly "
+        "matched to the analysis, a request for a small region may "
+        "still require reading much more data than expected."
+    )
+
+    st.write("Here is a simple example using xarray to open Zarr data:")
+
+    st.code(
+        """
+import xarray as xr
+
+ds = xr.open_zarr("temperature.zarr")
+
+# Select a time period and geographic region
+subset = ds["temperature"].sel(
+    time=slice("2050-01-01", "2050-12-31"),
+    latitude=slice(30, 50),
+    longitude=slice(-80, -50),
+)
+        """.strip(),
+        language="python",
+    )
+
+    st.caption(
+        "This example assumes that the Zarr dataset contains the "
+        "temperature variable and the requested coordinates. Coordinate "
+        "ordering and time labels vary between datasets."
+    )
+
+    st.markdown(
+        "[Official Zarr website](https://zarr.dev/) "
+        "| [Zarr Python documentation](https://zarr.readthedocs.io/)"
+    )
+
+    with st.expander("Explore further: the Zarr Python library"):
+        st.write(
+            "The Zarr Python library lets us create, read, and update "
+            "chunked arrays. You can use it directly or through libraries "
+            "such as xarray."
+        )
+
+        st.write("For example, we can create a small array and store it as Zarr:")
+
+        st.code(
+            """
+import numpy as np
+import zarr
+
+data = np.arange(100)
+
+array = zarr.create_array(
+    store="example.zarr",
+    shape=data.shape,
+    chunks=(20,),
+    dtype=data.dtype,
+    overwrite=True,
+)
+
+array[:] = data
+
+print(array[20:30])
+            """.strip(),
+            language="python",
+        )
+
+        st.write(
+            "The array contains 100 numbers, organised into chunks "
+            "of 20. The final line requests just 10 numbers. Chunking "
+            "allows the storage system to identify which pieces are "
+            "needed for that request."
+        )
+
+        st.caption(
+            "This example uses the Zarr Python 3 API and creates a local "
+            "store. Check the installed Zarr version if you are using "
+            "an existing course environment."
+        )
+
+        st.markdown(
+            "[Zarr Python getting started guide]"
+            "(https://zarr.readthedocs.io/en/stable/user-guide/)"
+        )
+
+    st.markdown("---")
+
+    # ── Step 4 ──────────────────────────────────────────────────────────────
+    st.header("4. Icechunk: keep track of data changes")
+
+    st.write(
+        "Imagine a research group working with a large collection "
+        "of Earth system model output. Someone updates a dataset, "
+        "but another researcher needs to reproduce an earlier analysis."
+    )
+
+    st.write(
+        "Icechunk works with Zarr data and adds versioning and "
+        "transactional updates. In simple terms, it helps researchers "
+        "record changes, revisit earlier versions, and publish updates "
+        "in a consistent way."
+    )
+
+    tab1, tab2 = st.tabs(
+        ["Without versioning", "With Icechunk"]
+    )
+
+    with tab1:
+        st.write(
+            "If data changes over time, it can be difficult to know "
+            "which version was used for an earlier result unless "
+            "versions are managed separately."
+        )
+
+    with tab2:
+        st.write(
+            "Icechunk records changes through commits and snapshots. "
+            "Researchers can refer to a particular version of the data "
+            "rather than relying only on the latest state."
+        )
+
+    st.caption(
+        "Icechunk is not simply another file format. It provides "
+        "version management and coordinated updates for Zarr-based data."
+    )
+
+    st.markdown(
+        "[Official Icechunk documentation](https://icechunk.io/en/latest/)"
+    )
+
+    st.markdown("---")
+
+    # ── Step 5 ──────────────────────────────────────────────────────────────
+    st.header("5. Did you know? VirtualiZarr")
+
+    st.info(
+        "You may be able to use existing NetCDF data in a Zarr-based "
+        "workflow without first copying all of the underlying data."
+    )
+
+    st.write(
+        "Scientific archives often contain thousands of NetCDF files. "
+        "Converting every file into a new format can take time and "
+        "require additional storage."
+    )
+
+    st.write(
+        "VirtualiZarr can create virtual representations of supported "
+        "existing datasets. Instead of copying all the data, it records "
+        "references to the original data and presents it in a form that "
+        "compatible Zarr-based tools can work with."
+    )
+
+    st.write("Think of it like a library catalogue:")
+
+    st.markdown(
+        """
+        - The books stay on the original shelves.
+        - The catalogue records where each book is stored.
+        - You can organise and find the material without copying
+          every book into a new building.
+        """
+    )
+
+    st.caption(
+        "Virtual representations are not full converted copies. "
+        "Support depends on the source files, metadata, storage access, "
+        "and operations performed by the tools."
+    )
+
+    st.markdown(
+        "[Official VirtualiZarr documentation]"
+        "(https://virtualizarr.readthedocs.io/en/stable/)"
+    )
+
+    st.markdown("---")
+
+    # ── Step 6 ──────────────────────────────────────────────────────────────
+    st.header("6. How do these tools fit together?")
+
+    st.write(
+        "These tools address different parts of working with large "
+        "scientific datasets."
+    )
+
+    st.table(
+        {
+            "Tool": [
+                "NetCDF",
+                "Zarr",
+                "Icechunk",
+                "VirtualiZarr",
+            ],
+            "What it helps with": [
+                "Storing scientific data and metadata",
+                "Storing arrays in chunks for flexible access",
+                "Tracking versions and coordinating data updates",
+                "Representing existing data virtually for compatible workflows",
+            ],
+        }
+    )
+
+    st.write(
+        "For Earth system research, these tools can help us manage "
+        "large model outputs, explore multiple ensemble members, "
+        "analyse selected regions and time periods, and make data "
+        "workflows more reproducible."
+    )
+
+    st.markdown("---")
+
+    # ── Task ────────────────────────────────────────────────────────────────
+    st.header("Your turn")
+
+    st.write(
+        "Imagine you have 50 ensemble members, each containing "
+        "100 years of daily global temperature data."
+    )
+
+    answer1 = st.radio(
+        "1. You want to analyse one geographic region. Which Zarr "
+        "feature can help limit unnecessary data access?",
+        ["Version history", "Chunking", "File extensions"],
+        index=None,
+    )
+
+    answer2 = st.radio(
+        "2. Your team needs to revisit an earlier version of a shared "
+        "Zarr dataset. Which tool can help?",
+        ["NetCDF", "Icechunk", "A larger chunk size"],
+        index=None,
+    )
+
+    answer3 = st.radio(
+        "3. You have existing NetCDF files and want a virtual "
+        "Zarr representation without copying all the underlying data. "
+        "Which tool could help?",
+        ["VirtualiZarr", "Icechunk alone", "A plotting library"],
+        index=None,
+    )
+
+    if st.button("Check my answers"):
+        if all(
+            answer is not None
+            for answer in (answer1, answer2, answer3)
+        ):
+            score = sum(
+                [
+                    answer1 == "Chunking",
+                    answer2 == "Icechunk",
+                    answer3 == "VirtualiZarr",
+                ]
+            )
+
+            st.write(f"You got **{score} out of 3** correct.")
+
+            if score == 3:
+                st.success(
+                    "Well done! You understand the main ideas."
+                )
+                st.balloons()
             else:
-                st.error("Not quite. Try again.")
+                st.info(
+                    "Review the sections above and try again. "
+                    "Remember: chunking helps organise data access, "
+                    "Icechunk tracks versions, and VirtualiZarr creates "
+                    "virtual representations of supported datasets."
+                )
+        else:
+            st.warning("Please answer all three questions first.")
 
-    if completed and correct == len(QUIZ):
-        st.components.v1.html(DONE_HTML, height=60)
-    elif correct == len(QUIZ):
-        st.markdown("Nice work on the quiz. Run the hands-on cells too, then tick the box above.")
-    elif completed:
-        st.markdown("Good, you ran the cells. Finish the quiz to wrap up.")
-
-    # ══ Next ═════════════════════════════════════════════════════════════════
-    st.info("""
-        **Did you know?** You don't have to rewrite your NetCDF files to use Zarr or Icechunk.
-        A tool called VirtualiZarr can create a "virtual" dataset that points to the data inside
-        your existing files, without copying them. Curious? Ask us about VirtualiZarr
-        and we'll add a module on it.
-    """)
-    # TODO: link to the next module
-    st.write("**Next:** *Finding Cloud Data: Catalogs and Arraylake*, where you learn how to find datasets in the cloud.")
-
-    with st.expander("Dig deeper: references"):
-        st.markdown("""
-- [Zarr](https://zarr.dev/) — the array format
-- [Why Icechunk?](https://icechunk.io/en/stable/overview/) — what Icechunk adds to Zarr
-- [Icechunk core concepts](https://icechunk.io/en/stable/understanding/concepts/) — transactions, snapshots, branches, tags
-- [Icechunk + Xarray](https://icechunk.io/en/stable/guides/xarray/) — the writing and reading pattern used above
-- [VirtualiZarr](https://virtualizarr.readthedocs.io/)
-        """)
+    st.markdown("---")
+    st.caption(
+        "Further reading: "
+        "[NetCDF](https://www.unidata.ucar.edu/software/netcdf/) | "
+        "[Zarr](https://zarr.dev/) | "
+        "[Icechunk](https://icechunk.io/en/latest/) | "
+        "[VirtualiZarr](https://virtualizarr.readthedocs.io/en/stable/)"
+    )
