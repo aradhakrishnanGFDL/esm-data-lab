@@ -23,7 +23,7 @@ DONE_HTML = """
 
 
 def run():
-    st.title("Finding Cloud Data: Catalogs and Arraylake")
+    st.title("Finding Earth System Data: Catalogs and Arraylake")
     # TODO: link to the intro to data formats module once it exists
     st.write("""
         In the previous module, *Intro to Data Formats*, you learned how NetCDF, Zarr and Icechunk store data
