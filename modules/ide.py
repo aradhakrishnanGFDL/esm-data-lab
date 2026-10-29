@@ -16,7 +16,7 @@ def run():
         """)
 
         # ── Step 1 ───────────────────────────────────────────────────────────
-        st.markdown("#### 1. Install VSCode")
+        st.markdown("#### 1. Install VSCode on your local machine (e.g GFDL thin-client")
         st.write("If you don't have VSCode installed, download it from:")
         st.code("https://code.visualstudio.com/download", language="bash")
 
@@ -31,7 +31,7 @@ def run():
         st.write("This only needs to be done once.")
 
         st.subheader("Generate an SSH key")
-        st.write("Open a terminal on your local machine (or GFDL workstation) and run:")
+        st.write("Open a terminal on your local machine (thin-client or GFDL workstation) and run:")
         st.code("ssh-keygen", language="bash")
         st.write("Hit Enter to accept all defaults. Do not set a password when prompted.")
 
@@ -42,7 +42,7 @@ def run():
         st.code("echo <paste copied key here> >> ~/.ssh/authorized_keys", language="bash")
         st.write("Exit both terminals.")
 
-        st.subheader("Edit your SSH config file")
+        st.subheader("Edit your SSH config file on the local machine")
         st.write("When you SSH into analysis, you will see something like this before picking a node:")
         st.code("""Enter a hostname, or a unique portion of a hostname []: an200
 Local port 44088 forwarded to remote host.
