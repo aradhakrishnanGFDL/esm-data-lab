@@ -129,4 +129,4 @@ Remote port 54088 forwarded to local host.""", language="bash")
         st.write("Coming soon.")
 
     st.markdown("---")
-    st.write("Next: Module 8 — More IDE tips and tricks")
+    st.write("Next: Module 8 — Running this notebook as a batcj job!")
