@@ -9,7 +9,34 @@ def run():
     """)
 
     st.info("Goal: Learn how Snakemake executes notebooks and submit your first Slurm job using `driver.sh`.")
-
+# ── High-Level Workflow Diagram ──────────────────────────────────────
+    st.markdown("#### High-Level Batch Execution Flow")
+    st.code("""
+┌──────────────────────────┐
+│  1. Submit Slurm Job     │  sbatch src/atw_diags/workflow/driver.sh
+└─────────────┬────────────┘
+              │
+              ▼
+┌──────────────────────────┐
+│  2. driver.sh Execution  │  Loads Conda env ('spear-analysis-pip')
+└─────────────┬────────────┘  Invokes 'run-atw-diags' CLI shortcut
+              │
+              ▼
+┌──────────────────────────┐
+│  3. runner.py Wrapper    │  • Locates packaged Snakefile dynamically
+└─────────────┬────────────┘  • Registers Jupyter kernel ('atw-diags')
+              │               • Passes JSON configs to Snakemake
+              ▼
+┌──────────────────────────┐
+│  4. Snakemake + Papermill│  Executes diagnostic notebook headlessly 
+└─────────────┬────────────┘  and saves outputs & logs to /work/a1r/
+              │
+              ▼
+┌──────────────────────────┐
+│  5. Live Output Log      │  tail -f /work/a1r/slurm_<JOB_ID>.out
+└──────────────────────────┘
+    """, language="text")
+    
     # ── Jargons ────────────────────────────────────────────────────
     with st.expander("Glossary (Snakemake, Papermill, CLI)"):
         st.markdown("""
