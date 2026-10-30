@@ -110,14 +110,6 @@ run-atw-diags \\
             and q2 == "Executes Jupyter notebooks headlessly and passes parameters into cells."
         ):
             st.success("Correct!")
+            st.balloons()
         else:
             st.error("Some answers were incorrect. Review the steps above.")
-
-    # ── Task ─────────────────────────────────────────────────────────────
-    st.markdown("---")
-    completed = st.checkbox("I submitted `driver.sh` via sbatch and checked logs with `tail -f`")
-    if completed:
-        job_id = st.text_input("Enter your Slurm Job ID:")
-        if job_id:
-            st.success(f"Job {job_id} tracked!")
-            st.balloons()
