@@ -111,7 +111,25 @@ run-atw-diags \\
         ]
     )
 
-    if st.button("Check Quiz Answers"):
+if st.button("Check Quiz Answers"):
         if (
             q1 == "`run-atw-diags` is a console script alias that directly executes `runner.py` inside your Conda environment."
-            and q2 == "Batch jobs run headlessly on compute nodes, allowing them to finish
+            and q2 == "Batch jobs run headlessly on compute nodes, allowing them to finish even if you close VSCode or disconnect SSH."
+        ):
+            st.success("Correct! You understand how interactive and batch execution work together.")
+        else:
+            st.error("Some answers were incorrect. Review the 'Under the Hood' sections above and try again.")
+
+    # ── Task ─────────────────────────────────────────────────────────────
+    st.markdown("---")
+    st.write("**Your turn:** Submit `src/atw_diags/workflow/driver.sh` to Slurm and monitor its output log.")
+    
+    completed = st.checkbox("I submitted `driver.sh` via sbatch and checked my logs with `tail -f`")
+    if completed:
+        job_id = st.text_input("Enter your Slurm Job ID:")
+        if job_id:
+            st.success(f"Job {job_id} confirmed! You have successfully run a batch diagnostic job on Slurm.")
+            st.balloons()
+
+    st.markdown("---")
+    st.write("Next: Module 9 — Analyzing pipeline outputs and troubleshooting failed runs")
