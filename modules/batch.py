@@ -118,6 +118,10 @@ run-atw-diags \\
     * **Diagnostic Figures:** Generated plot files (e.g., `.png`, `.pdf`, `.nc`) are saved directly into the output figures subfolder defined in your case JSON settings.
     * **Log files:** This is currently in the atw_diags directory. TODO move to output perhaps.
     """)
+
+    st.write("""
+    There is a module underway to help diagnostic developers understand how to make a new script/notebook work using this pipeline. Stay tuned
+    """)
     # ── Reflection Quiz ──────────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Quiz")
