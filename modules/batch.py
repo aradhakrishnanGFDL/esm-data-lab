@@ -111,6 +111,13 @@ run-atw-diags \\
     st.write("Check queue status and stream live logs:")
     st.code("squeue -u $USER\ntail -f /work/a1r/slurm_<JOB_ID>.out", language="bash")
 
+    st.subheader("Locating Diagnostic Outputs")
+    st.write("""
+    Once the pipeline completes, check your designated output directory (e.g. `/work/a1r/` or your specified `out_dir` in your notebook. (TODO add more clarity)):
+    * **Executed Notebook (`.ipynb`):** Papermill saves a fully executed copy of the notebook containing all printed outputs, populated parameters, and cell error traces.
+    * **Diagnostic Figures:** Generated plot files (e.g., `.png`, `.pdf`, `.nc`) are saved directly into the output figures subfolder defined in your case JSON settings.
+    * **Log files:** This is currently in the atw_diags directory. TODO move to output perhaps.
+    """)
     # ── Reflection Quiz ──────────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Quiz")
