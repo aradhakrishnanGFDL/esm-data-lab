@@ -10,11 +10,11 @@ def run():
 
     st.info("Goal: Learn how Snakemake executes notebooks and submit your first Slurm job using `driver.sh`.")
 
-    # ── Jargon Buster ────────────────────────────────────────────────────
+    # ── Jargons ────────────────────────────────────────────────────
     with st.expander("Glossary (Snakemake, Papermill, CLI)"):
         st.markdown("""
         * **Snakemake**: Workflow manager that runs data pipeline steps automatically.
-        * **Papermill**: Tool used by Snakemake to execute Jupyter notebooks headlessly and inject input parameters.
+        * **Papermill**: Tool used by Snakemake to execute Jupyter notebooks headlessly and inject input parameters into your notebook.
         * **Headless Execution**: Running code in the background without needing a terminal or GUI open.
         * **CLI**: Command line shortcut (like `run-atw-diags`) that executes Python scripts with clean arguments.
         """)
@@ -22,6 +22,7 @@ def run():
     # ── Step 1 ───────────────────────────────────────────────────────────
     st.markdown("#### 1. Method A: Direct Approach (`vanilla_driver.sh`)")
     st.write("`vanilla_driver.sh` runs raw Snakemake directly:")
+    st.write("First, navigate to your cloned repository on the GFDL analysis machine:")
     st.code("cat src/atw_diags/workflow/vanilla_driver.sh", language="bash")
 
     st.code("""
@@ -66,8 +67,10 @@ run-atw-diags \\
 
     st.info("""
     **What `driver.sh` resolves behind the scenes (`runner.py`):**
-    * Automatically finds the internal `Snakefile` inside the Conda environment package.
+    * Automatically finds the internal `Snakefile` inside the Conda environment package. 
+    * Snakefile chains the order of operations, input, output necessary
     * Registers the Jupyter kernel for Papermill automatically.
+    * Papermill runs the notebooks, and injects parameters from the snakemake/batch workflow into your notebook. Yes it saves a copy of your executed notebook so you know what value was exactly used if your notebook has parameters to be passed such as out_dir
     * Allows passing custom JSON configs directly from the command line.
     """)
 
