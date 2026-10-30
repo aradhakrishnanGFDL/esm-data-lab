@@ -1,7 +1,7 @@
 import streamlit as st
 
 def run():
-    st.title("Module 8: Running Batch Jobs with Slurm")
+    st.title("Module 8: Running Jupyter notebook as Batch Jobs")
     st.write("""
     In Module 7, you ran notebooks interactively in VSCode. For data-intensive 
     production runs, submit your work as a **batch job** using Slurm so it runs headlessly 
@@ -72,6 +72,8 @@ run-atw-diags \\
     * Registers the Jupyter kernel for Papermill automatically.
     * Papermill runs the notebooks, and injects parameters from the snakemake/batch workflow into your notebook. Yes it saves a copy of your executed notebook so you know what value was exactly used if your notebook has parameters to be passed such as out_dir
     * Allows passing custom JSON configs directly from the command line.
+    * In our example, the notebook is found in src/atw-diags/notebooks/ directory.
+    * All our workflow files like driver scripts and Snakemake are organized in src/atw-diags/workflow directory.
     """)
 
     # ── Step 3 ───────────────────────────────────────────────────────────
