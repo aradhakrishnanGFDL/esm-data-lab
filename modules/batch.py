@@ -81,4 +81,55 @@ run-atw-diags \\
     # ── Step 4 ───────────────────────────────────────────────────────────
     st.markdown("#### 4. Monitor your running job")
     st.write("You can check the status of your queued or running jobs at any time:")
-    st.code("squeue -
+    st.code("squeue -u $USER", language="bash")
+
+    st.subheader("Streaming live log output")
+    st.write("Because batch jobs run headlessly in the background, output is written to your log file instead of the terminal. To view live progress (similar to watching notebook cell execution in VSCode):")
+    st.code("tail -f /work/a1r/slurm_<JOB_ID>.out", language="bash")
+    st.write("Replace `<JOB_ID>` with your numerical job number (e.g. `1234567`).")
+    st.info("Tip: Pressing `Ctrl+C` exits the `tail` view. It does NOT stop or cancel your running Slurm job!")
+
+    # ── Reflection Quiz ──────────────────────────────────────────────────
+    st.markdown("---")
+    st.subheader("Test your understanding")
+    
+    q1 = st.radio(
+        "1. What is the relationship between `run-atw-diags` in `driver.sh` and `runner.py`?",
+        [
+            "They are completely separate programs that run sequentially.",
+            "`run-atw-diags` is a console script alias that directly executes `runner.py` inside your Conda environment.",
+            "`runner.py` replaces Slurm and eliminates the need for `sbatch`.",
+        ]
+    )
+
+    q2 = st.radio(
+        "2. Why is `sbatch src/atw_diags/workflow/driver.sh` preferred over running notebooks interactively in VSCode for long diagnostic runs?",
+        [
+            "Batch jobs run headlessly on compute nodes, allowing them to finish even if you close VSCode or disconnect SSH.",
+            "VSCode cannot connect to GFDL compute nodes.",
+            "`driver.sh` automatically fixes Python code errors during execution.",
+        ]
+    )
+
+    if st.button("Check Quiz Answers"):
+        if (
+            q1 == "`run-atw-diags` is a console script alias that directly executes `runner.py` inside your Conda environment."
+            and q2 == "Batch jobs run headlessly on compute nodes, allowing them to finish even if you close VSCode or disconnect SSH."
+        ):
+            st.success("Correct! You understand how interactive and batch execution work together.")
+        else:
+            st.error("Some answers were incorrect. Review the 'Under the Hood' sections above and try again.")
+
+    # ── Task ─────────────────────────────────────────────────────────────
+    st.markdown("---")
+    st.write("**Your turn:** Submit `src/atw_diags/workflow/driver.sh` to Slurm and monitor its output log.")
+    
+    completed = st.checkbox("I submitted `driver.sh` via sbatch and checked my logs with `tail -f`")
+    if completed:
+        job_id = st.text_input("Enter your Slurm Job ID:")
+        if job_id:
+            st.success(f"Job {job_id} confirmed! You have successfully run a batch diagnostic job on Slurm.")
+            st.balloons()
+
+    st.markdown("---")
+    st.write("Next: Module 9 — Analyzing pipeline outputs and troubleshooting failed runs")
