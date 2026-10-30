@@ -11,7 +11,7 @@ def run():
     st.info("Goal: Learn how Snakemake executes notebooks and submit your first Slurm job using `driver.sh`.")
 
     # ── Jargon Buster ────────────────────────────────────────────────────
-    with st.expander("📚 Jargon Buster (Snakemake, Papermill, CLI)"):
+    with st.expander("Glossary (Snakemake, Papermill, CLI)"):
         st.markdown("""
         * **Snakemake**: Workflow manager that runs data pipeline steps automatically.
         * **Papermill**: Tool used by Snakemake to execute Jupyter notebooks headlessly and inject input parameters.
