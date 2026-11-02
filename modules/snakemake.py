@@ -72,14 +72,19 @@ def run():
         from PIL import Image
         
         try:
-            # Check for the correct case-sensitive folder path and file extension (.jpeg / .jpg)
-            image_path = Path(__file__).parent / "assets" / "papermill_tagging.jpeg"
-            
-            # If you are using .jpg, keep this fallback
-            if not image_path.exists():
-                image_path = Path(__file__).parent / "assets" / "papermill_tagging.jpeg"
+
+            # Point to project root (/mount/src/esm-data-lab/)
+            PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+            # Path to the root assets folder
+            IMAGE_PATH = PROJECT_ROOT / "assets" / "papermill_tagging.jpeg"
+
+            if IMAGE_PATH.exists():
+                st.image(str(IMAGE_PATH), caption="Papermill Tagging")
+            else:
+                st.error(f"Image not found at: {IMAGE_PATH}")
                 
-            img = Image.open(image_path)
+            img = Image.open(IMAGE_PATH)
             st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
         except Exception as e:
             st.warning(f"Could not load Image asset: verify assets/papermill_tagging.jpeg exists. Error: {e}")
