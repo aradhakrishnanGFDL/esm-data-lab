@@ -70,7 +70,7 @@ def run():
     from pathlib import Path
     from PIL import Image
         
-     try:
+    try:
 
             # Point to project root (/mount/src/esm-data-lab/)
             PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -79,7 +79,7 @@ def run():
             IMAGE_PATH = PROJECT_ROOT / "assets" / "papermill_tagging.jpeg"
             img = Image.open(IMAGE_PATH)
             st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
-      except Exception as e:
+    except Exception as e:
             st.warning(f"Could not load Image asset: verify assets/papermill_tagging.jpeg exists. Error: {e}")
           
     st.subheader("How Parameter Injection Works at Runtime")
