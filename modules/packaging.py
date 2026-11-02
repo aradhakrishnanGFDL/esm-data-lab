@@ -1,6 +1,6 @@
 import streamlit as st
 
-def run():
+def run_module_8():
     st.title("Module 8: Packaging Python Diagnostics")
 
     # ── Learning Objectives & Scope ─────────────────────────────────────
@@ -73,24 +73,79 @@ atw_diags/
 run-atw-diags = "atw_diags.workflow.runner:main"
 """, language="toml")
 
-    # ── 4. Installation and Inspection ─────────────────────────────────
-    st.header("4. Hands-On: Local Package Installation")
+    # ── 4. Hands-On Lab ─────────────────────────────────────────────────
+    st.header("4. Hands-On: Repository Update, Environment Check & Package Installation")
     
-    st.write("Run these commands in your cluster terminal to perform a local editable install:")
+    st.markdown("""
+    In previous modules, you cloned the `atw_diags` repository from GitHub (`https://github.com/aradhakrishnanGFDL/atw_diags`). 
+    Follow these step-by-step instructions in your GFDL cluster terminal to update your local repository, check your environment, install the package, and test Python imports.
+    """)
+    st.info("💡 **Starting a brand-new project?** If you are creating a new diagnostic suite from scratch rather than using our cloned repository, jump to **Section 5** to generate a fresh template first.")
+
+    # ── Step 4.1: Repository Setup ──
+    st.subheader("Step A: Update Repository & Switch Branch")
+    st.write("Navigate into your existing cloned repository directory, pull the latest updates, and switch to the `batch` branch:")
+    
     st.code("""
-# Navigate to repository root
-cd /nbhome/jill.bo/git/atw/atw_diags
+# Navigate into your existing cloned repository directory
+cd /nbhome/jill.bo/git/atw_diags
 
-# Activate target environment
-conda activate spear-analysis-pip
+# Fetch latest changes from the remote GitHub repository
+git fetch origin
 
-# Install local directory in editable mode
+# Update your local tracking branches to match origin
+git pull origin
+
+# Switch to the 'batch' branch for this module
+git checkout batch
+""", language="bash")
+    
+    st.caption("Note: The `batch` branch contains the packaging configuration (`pyproject.toml`) and driver scripts used in this module. This branch will subsequently be merged into the `main` branch.")
+
+    # ── Step 4.2: Conda Environment Setup ──
+    st.subheader("Step B: Conda Environment & pip Verification")
+    st.write("""
+    Refer to earlier modules where you set up your `spear-analysis` Conda environment. 
+    Ensure your active environment has `pip` installed and configured properly so editable mode (`pip install -e .`) functions correctly.
+    """)
+    
+    st.code("""
+# Activate your existing Conda environment created in earlier modules
+conda activate spear-analysis
+
+# Verify pip is installed in this environment
+which pip
+# Output should point to: /nbhome/jill.bo/conda/envs/spear-analysis/bin/pip
+
+# Install your local directory in editable mode (-e)
 pip install -e .
+""", language="bash")
 
-# Inspect package location and dependencies
+    st.info("""
+    **Conda environment.yml Tip for Local Editable Packages:**
+    If you manage your environment via an `environment.yml` file, you include local editable installs under the `pip:` section like this:
+    ```yaml
+    name: spear-analysis
+    channels:
+      - conda-forge
+      - defaults
+    dependencies:
+      - python=3.14
+      - pip
+      - pip:
+        - -e .
+    ```
+    """)
+
+    # ── Step 4.3: Inspection ──
+    st.subheader("Step C: Inspect Package Registration & CLI Binary")
+    st.write("Verify that your package location points to `site-packages` and the `run-atw-diags` CLI binary is placed in your environment PATH:")
+    
+    st.code("""
+# Inspect package metadata, installation path, and dependencies
 pip show atw-diags
 
-# Verify the CLI command binary location
+# Verify that the executable CLI command is mapped inside your environment's bin directory
 which run-atw-diags
 """, language="bash")
 
@@ -99,12 +154,59 @@ which run-atw-diags
 Name: atw-diags
 Version: 0.1.0
 Summary: SPEAR Model Diagnostic Pipeline
-Location: /nbhome/jill.bo/conda/envs/spear-analysis-pip/lib/python3.14/site-packages
+Location: /nbhome/jill.bo/conda/envs/spear-analysis/lib/python3.14/site-packages
 Requires: numpy, xarray, matplotlib, snakemake, papermill
 """, language="text")
 
-    # ── 5. Next Steps / Advanced Distribution ──────────────────────────
-    st.header("5. Beyond Local Installation (Advanced)")
+    # ── Step 4.4: Python Terminal Testing ──
+    st.subheader("Step D: Test Import Access from Python Command Line")
+    st.write("To verify that `pip install -e .` worked, change directory outside your repository (e.g., to your home directory) and test importing `atw_diags` directly from the Python terminal:")
+    
+    st.code("""
+# Move to your home directory to prove imports work outside the source folder
+cd ~
+
+# Start Python interactive session
+python
+""", language="bash")
+
+    st.write("Inside the Python prompt (`>>>`), run the following commands:")
+    st.code("""
+# 1. Import top-level package and inspect its installation path
+>>> import atw_diags
+>>> print(atw_diags.__file__)
+# Output: /nbhome/jill.bo/git/atw_diags/src/atw_diags/__init__.py
+
+# 2. Import submodules directly
+>>> import atw_diags.utils as utils
+>>> print(dir(utils))
+
+# 3. Import specific functions across submodules
+>>> from atw_diags.utils import dmget
+>>> print(callable(dmget))
+# Output: True
+
+# Exit Python session
+>>> exit()
+""", language="python")
+
+    # ── 5. Advanced Note on GitHub Repository Templates ─────────────────
+    st.header("5. Creating New Diagnostic Packages via GitHub Templates")
+    
+    st.write("""
+    When creating a brand-new diagnostic suite, you don't need to manually write `pyproject.toml` or create the `src/` directory tree from scratch:
+    
+    1. **Use the GitHub Template:** Visit the `atw_diags` template repository on GitHub and click **"Use this template"** to spawn your own project repository.
+    2. **Create New Repository:** Choose 'Create a new repository' to populate the structure automatically.
+    3. **Clone to Cluster:** Clone your new repository to your `/nbhome/jill.bo/git/` workspace.
+    4. **Register via Pip:** `cd` into your new directory and run `pip install -e .` to link your new package and CLI binary into your active Conda environment.
+    """)
+    
+    # Render the screenshot of the 'Use this template' action
+    st.image("image_2.png", caption="Initiating a brand-new project from a GitHub repository template.", use_container_width=True)
+
+    # ── 6. Next Steps / Advanced Distribution ──────────────────────────
+    st.header("6. Beyond Local Installation (Advanced)")
     
     st.write("""
     While this module focuses on **local installation**, packaging your code opens up options for broader distribution across teams or HPC systems:
@@ -117,7 +219,7 @@ Requires: numpy, xarray, matplotlib, snakemake, papermill
     * **PyPI / Private Package Index:** Publish stable versions to PyPI or an internal index for version-controlled releases (`pip install atw-diags`).
     """)
 
-    # ── 6. Review ───────────────────────────────────────────────────────
+    # ── 7. Review ───────────────────────────────────────────────────────
     st.markdown("---")
     st.subheader("Review Questions")
 
