@@ -13,6 +13,7 @@ pages = {
     "git_contrib": ("Module 5: Contributing code", git_contrib.run),
     "config_env": ("Module 6: Prepare environment to run notebook", config_env.run),
     "ide": ("Module 7: Running a Jupyter notebook", ide.run),
+    "packaging": ("Module 8: Python Packaging", packaging.run),
     "batch":  ("Module 8: Jupyter notebook in batch mode", batch.run),
     "moreide":    ("Module 9: VSCode tips and tricks", vscode_tips.run),
     "data_format": ("Module 10: Common Data formats", data_format.run),
