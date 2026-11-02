@@ -80,3 +80,162 @@ def run():
     )
 
     # ── Two Approaches: Vanilla vs Packaged ──────────────────────────────
+    st.markdown("---")
+    st.subheader("1. Choosing Your Driver: Dev vs. Production")
+    st.write("""
+    Depending on whether you are actively developing code or submitting production runs, 
+    two driver scripts are provided in `src/atw_diags/workflow/`:
+    """)
+
+    tab_vanilla, tab_packaged = st.tabs(
+        ["🛠️ Development Mode (`vanilla_driver.sh`)", "🚀 Production Mode (`driver.sh`)"]
+    )
+
+    with tab_vanilla:
+        st.markdown("##### Direct Developer Execution (`vanilla_driver.sh`)")
+        st.write("""
+        Ideal for rapid local development when you want to bypass package entry points 
+        and execute `snakemake` directly against the raw repo files.
+        """)
+
+        st.code(
+            """#!/bin/bash
+#SBATCH --job-name=atw_dev
+#SBATCH --output=/work/a1r/slurm_%j.out
+#SBATCH --error=/work/a1r/slurm_%j.err
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=02:00:00
+#SBATCH --partition=batch
+
+set -e
+
+# 1. Manually cd into repo root
+cd /home/a1r/git/atw/atw_diags
+
+# 2. Activate Conda environment directly
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate spear-analysis
+
+# 3. Direct Snakemake call pointing to the local Snakefile
+snakemake -s src/atw_diags/workflow/Snakefile \\
+    --cores 4 \\
+    --config \\
+        case_path="/home/a1r/git/atw/atw_diags/configs/atw_atmos_ts_monthly_sfc_ocean_updated_config.json" \\
+        settings_path="/home/a1r/git/atw/atw_diags/diagnostics/settings.json" \\
+        out_dir="/work/a1r/" \\
+    -F
+""",
+            language="bash",
+        )
+
+        st.caption(
+            "💡 **When to use:** Rapid edits to `Snakefile`, custom rule testing, or debugging notebook logic directly in the repository."
+        )
+
+    with tab_packaged:
+        st.markdown("##### Packaged CLI Execution (`driver.sh`)")
+        st.write("""
+        Recommended for team and automated production runs. It utilizes the installed 
+        `run-atw-diags` command (registered via `pip install -e .` in Module 8), which 
+        automatically locates packaged workflow files and handles Jupyter kernel registration.
+        """)
+
+        st.code(
+            """#!/bin/bash
+#SBATCH --job-name=atw_diags
+#SBATCH --output=/work/a1r/slurm_%j.out
+#SBATCH --error=/work/a1r/slurm_%j.err
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=32G
+#SBATCH --time=04:00:00
+#SBATCH --partition=batch
+
+source ~/.bashrc
+source $(conda info --base)/etc/profile.d/conda.sh
+conda activate spear-analysis-pip
+
+# Invokes the CLI entry point installed via 'pip install -e .'
+run-atw-diags \\
+    --case /home/a1r/git/atw/atw_diags/configs/atw_atmos_ts_monthly_sfc_ocean_updated_config.json \\
+    --settings /home/a1r/git/atw/atw_diags/diagnostics/settings.json \\
+    out_dir="/work/a1r/" -w $TMPDIR
+""",
+            language="bash",
+        )
+
+        st.caption(
+            "💡 **When to use:** Production workloads and cluster-wide automated runs where the package is installed in the active environment."
+        )
+
+    # ── Job Control & Verification ───────────────────────────────────────
+    st.markdown("---")
+    st.subheader("2. Job Submission & Output Verification")
+
+    st.write("Submit whichever driver script fits your current task:")
+    st.code(
+        """# For dev testing:
+sbatch src/atw_diags/workflow/vanilla_driver.sh
+
+# For packaged production:
+sbatch src/atw_diags/workflow/driver.sh
+""",
+        language="bash",
+    )
+
+    st.write("Check queue status and inspect real-time log output:")
+    st.code(
+        """# 1. Check job state on allocated compute nodes
+squeue -u $USER
+
+# 2. Stream live logs (stdout/stderr combined)
+tail -f /work/a1r/slurm_<JOB_ID>.out
+""",
+        language="bash",
+    )
+
+    st.write("**Where artifacts live upon completion:**")
+    st.markdown("""
+    * **`*_executed.ipynb`**: Contains cell-by-cell execution timings, outputs, and injected parameters (`config_path`, `out_dir`).
+    * **Diagnostic Figures**: Output plots (e.g. `t_surf_final_replica.png`) saved to your specified `out_dir`.
+    * **Slurm Output (`slurm_<JOB_ID>.out`)**: Records environment setup, node hostname, Snakemake step progression, and exit codes.
+    """)
+
+    # ── Knowledge Check ─────────────────────────────────────────────────
+    st.markdown("---")
+    st.subheader("Knowledge Check")
+
+    q1 = st.radio(
+        "1. Why is the `run-atw-diags` command available directly in the terminal within `driver.sh`?",
+        [
+            "Because we ran `pip install -e .` in Module 8, registering the script entry point into our Conda environment.",
+            "Because Slurm automatically converts every Python script in the repository into a shell command.",
+            "Because Snakemake compiles it into an executable binary on the fly.",
+        ],
+    )
+
+    q2 = st.radio(
+        "2. When would you prefer using `vanilla_driver.sh` over `driver.sh`?",
+        [
+            "When actively developing and testing edits in the local Snakefile or notebook without relying on package CLI wrappers.",
+            "When submitting the final workflow for automated cluster-wide multi-user deployment.",
+            "When running on nodes without any Conda installation.",
+        ],
+    )
+
+    if st.button("Check Answers", type="primary"):
+        c1 = (
+            q1
+            == "Because we ran `pip install -e .` in Module 8, registering the script entry point into our Conda environment."
+        )
+        c2 = (
+            q2
+            == "When actively developing and testing edits in the local Snakefile or notebook without relying on package CLI wrappers."
+        )
+
+        if c1 and c2:
+            st.success("Correct! You're ready to submit and manage batch runs.")
+        else:
+            st.error("One or more answers need review. Check the tabs above and retry.")
