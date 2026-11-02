@@ -85,10 +85,11 @@ def run():
                 st.error(f"Image not found at: {IMAGE_PATH}")
                 
             img = Image.open(IMAGE_PATH)
-            st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
+            #st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
         except Exception as e:
             st.warning(f"Could not load Image asset: verify assets/papermill_tagging.jpeg exists. Error: {e}")
-            
+    st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
+        
     # ── Sub-step: Runtime Execution Mechanic ──
     st.subheader("How Parameter Injection Works at Runtime")
     st.write("When Papermill runs, it leaves your original tagged cell untouched and automatically inserts a new cell directly below it with the updated values:")
