@@ -39,36 +39,63 @@ def run():
         Allocates cluster compute resources (nodes, CPUs, memory) to run tasks in the queue.
         """)
 
-    # ── 2. What is Papermill? ───────────────────────────────────────────
-    st.header("2. What is Papermill?")
+# ── 2. What is Papermill? ───────────────────────────────────────────
+    st.header("2. What is Papermill & How to Tag Notebooks")
 
     st.write("""
-    **Papermill** is a command-line tool that executes Jupyter notebooks without opening a web browser.
+    **Papermill** is a command-line tool that executes Jupyter notebooks automatically in the background without opening a browser interface.
 
-    * **Headless Execution:** Runs notebooks in the background from top to bottom.
-    * **Parameter Injection:** Passes runtime values (like dataset names or output paths) into a specific notebook cell.
-    * **Saved Outputs:** Saves a completed copy of the notebook containing all cell outputs and generated plots.
+    * **Headless Execution:** Runs notebooks top-to-bottom on compute nodes.
+    * **Parameter Injection:** Overrides default variables (e.g., case names, file paths) at runtime.
+    * **Output Preservation:** Saves a rendered notebook with all generated plots and cell logs.
     """)
 
-    st.subheader("How Parameter Injection Works")
-    st.write("Tag a cell in your notebook as `parameters`. When Papermill runs, it inserts a new cell below it with your custom runtime values:")
+    # ── Sub-step: GUI Instructions for Students ──
+    st.subheader("How to Add the `parameters` Tag in VS Code")
+    st.write("Before Papermill can pass runtime values to a notebook, you must designate the cell containing your default variables as the parameters cell:")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Notebook Cell (tagged: `parameters`)")
+    col_gui1, col_gui2 = st.columns([2, 3])
+    with col_gui1:
+        st.markdown("""
+        **Tagging Steps:**
+        1. Open your `.ipynb` notebook file in VS Code.
+        2. Click on the cell containing your default parameter variables.
+        3. Click the **'More Actions' (•••)** button on the top-right toolbar of the cell frame.
+        4. Select **'Mark Cell as Parameters'** from the dropdown menu.
+        5. Verify that the **`parameters`** tag appears at the bottom-left corner of that cell's frame.
+        """)
+        
+        st.info("💡 **Alternatively:** You can also click the `+ Tag` button at the bottom-left of the cell and type `parameters` manually!")
+        
+    with col_gui2:
+        # Load your marked-up visual screenshot from assets
+        st.image("assets/papermill_tagging.png", caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
+
+    # ── Sub-step: Runtime Execution Mechanic ──
+    st.subheader("How Parameter Injection Works at Runtime")
+    st.write("When Papermill runs, it leaves your original tagged cell untouched and automatically inserts a new cell directly below it with the updated values:")
+
+    col_cell1, col_cell2 = st.columns(2)
+    with col_cell1:
+        st.subheader("Original Cell (Tagged: `parameters`)")
         st.code("""
 # Default parameters inside notebook
-case_name = "default_case"
-out_dir = "/tmp/output"
+OUTPUT_DIR = None
+config_path = None
+settings_path = None
 """, language="python")
 
-    with col2:
-        st.subheader("Values Injected by Papermill at Runtime")
+    with col_cell2:
+        st.subheader("Injected Cell Added by Papermill")
         st.code("""
-# Injected values added automatically
-case_name = "spear_atmos_ts_monthly"
-out_dir = "/work/jill.bo/diags/out"
+# Injected cell added automatically below parameters cell
+OUTPUT_DIR = "/work/jill.bo/diags/out"
+config_path = "/nbhome/jill.bo/git/atw_diags/configs/settings.json"
+settings_path = "/nbhome/jill.bo/git/atw_diags/configs/settings.json"
 """, language="python")
+
+    st.caption("Note: Because Python executes cells top-to-bottom, the injected variables below automatically override your initial defaults for the remainder of the notebook execution.")
+    
 
     # ── 3. How Snakemake Works ──────────────────────────────────────────
     st.header("3. How Snakemake Coordinates Execution")
