@@ -1,78 +1,92 @@
 import streamlit as st
 
+
 def run():
-    st.title("Module 8: Running Jupyter notebook as Batch Jobs")
+    st.title("Module 8: Submitting Batch Jobs with Slurm")
+
+    # ── Header & Repo Reference ──────────────────────────────────────────
+    col_title, col_link = st.columns([3, 1])
+    with col_title:
+        st.caption("Sample Diagnostics (`atw_diags`)")
+    with col_link:
+        st.markdown(
+            "[![GitHub](https://img.shields.io/badge/GitHub-atw__diags-181717?style=flat&logo=github)](https://github.com/NOAA-GFDL/atw_diags)"
+        )
+
     st.write("""
-    In Module 7, you ran notebooks interactively in VSCode. For data-intensive 
-    production runs, submit your work as a **batch job** using Slurm so it runs headlessly 
-    on GFDL cluster nodes.
+    Interactive exploration in VS Code is ideal for prototyping, but production-scale climate 
+    diagnostics (multi-century runs, high-resolution ocean grids) exceed login-node 
+    resource limits. This module covers packaging that workflow into a non-interactive, 
+    headless batch job on the GFDL analysis cluster via Slurm.
     """)
 
-    st.info("Goal: Learn how Snakemake executes notebooks and submit your first Slurm job using `driver.sh`.")
-# ── High-Level Workflow Diagram ──────────────────────────────────────
-    st.markdown("#### High-Level Batch Execution Flow")
-    st.code("""
-┌──────────────────────────┐
-│  1. Submit Slurm Job     │  sbatch src/atw_diags/workflow/driver.sh
-└─────────────┬────────────┘
-              │
-              ▼
-┌──────────────────────────┐
-│  2. driver.sh Execution  │  Loads Conda env ('spear-analysis-pip')
-└─────────────┬────────────┘  Invokes 'run-atw-diags' CLI shortcut
-              │
-              ▼
-┌──────────────────────────┐
-│  3. runner.py Wrapper    │  • Locates packaged Snakefile dynamically
-└─────────────┬────────────┘  • Registers Jupyter kernel ('atw-diags')
-              │               • Passes JSON configs to Snakemake
-              ▼
-┌──────────────────────────┐
-│  4. Snakemake + Papermill│  Executes diagnostic notebook headlessly 
-└─────────────┬────────────┘  and saves outputs & logs to /work/a1r/
-              │
-              ▼
-┌──────────────────────────┐
-│  5. Live Output Log      │  tail -f /work/a1r/slurm_<JOB_ID>.out
-└──────────────────────────┘
-    """, language="text")
-    
-    # ── Jargons ────────────────────────────────────────────────────
-    with st.expander("Glossary (Snakemake, Papermill, CLI)"):
-        st.markdown("""
-        * **Snakemake**: Workflow manager that runs data pipeline steps automatically.
-        * **Papermill**: Tool used by Snakemake to execute Jupyter notebooks headlessly and inject input parameters into your notebook.
-        * **Headless Execution**: Running code in the background without needing a terminal or GUI open.
-        * **CLI**: Command line shortcut (like `run-atw-diags`) that executes Python scripts with clean arguments.
-        """)
+    # ── Prerequisites & Terminology Recap ────────────────────────────────
+    col_pre, col_gloss = st.columns([1, 1])
+    with col_pre:
+        with st.expander("Prerequisites Recap", expanded=False):
+            st.markdown("""
+            * **Pip Packaging**: How `run-atw-diags` is registered as a CLI entry point via `pyproject.toml`.
+            * **Module 8a (Snakemake & DAGs)**: Dependency tracking, caching targets, and rule definitions.
+            * **Module 8b (Papermill)**: Tagging the `parameters` cell to inject runtime filesystem paths headlessly.
+            """)
+    with col_gloss:
+        with st.expander("Glossary Recap", expanded=False):
+            st.markdown("""
+            * **Slurm (`sbatch`)**: Workload manager allocating compute nodes, cores, memory, and walltime.
+            * **Headless Execution**: Running programmatic notebooks start-to-finish without an active UI or web server.
+            * **Kernel Registration**: Exposing a specific Conda environment (`spear-analysis`) to Jupyter’s runtime.
+            * **DAG (Directed Acyclic Graph)**: Snakemake's dependency tree ensuring prerequisites generate before consumers run.
+            """)
 
-    # ── Step 1 ───────────────────────────────────────────────────────────
-    st.markdown("#### 1. Method A: Direct Approach (`vanilla_driver.sh`)")
-    st.write("`vanilla_driver.sh` runs raw Snakemake directly:")
-    st.write("First, navigate to your cloned repository on the GFDL analysis machine:")
-    st.code("cat src/atw_diags/workflow/vanilla_driver.sh", language="bash")
+    # ── Lifecycle Diagram ────────────────────────────────────────────────
+    st.markdown("#### The Batch Lifecycle")
+    st.code(
+        """
+[sbatch driver.sh]
+        │
+        ▼
+┌──────────────────────────────────────────────┐
+│ Compute Node Allocation                      │
+│   • Directives: 1 node, 4 cores, 32GB RAM    │
+│   • Activates environment: spear-analysis    │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ CLI Entry Point: run-atw-diags               │
+│   • Dynamically resolves repo root & paths   │
+│   • Verifies Jupyter kernel registration     │
+│   • Hand-off to Snakemake orchestrator       │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Headless Execution Engine (Papermill)        │
+│   • Injects absolute paths into parameters   │
+│   • Executes notebook cells sequentially     │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Persisted Artifacts                          │
+│   • Slurm logs:  /work/a1r/slurm_<JOB_ID>.out│
+│   • Execution:   <out_dir>/*_executed.ipynb  │
+│   • Diagnostics: <out_dir>/figures/*.png     │
+└──────────────────────────────────────────────┘
+    """,
+        language="text",
+    )
 
-    st.code("""
-#!/bin/bash
-set -e
-cd /home/a1r/git/atw/atw_diags
-export ATW_NB_DIR="/home/a1r/git/atw/atw_diags/src/atw_diags/notebooks"
+    # ── Script Inspection ────────────────────────────────────────────────
+    st.markdown("---")
+    st.subheader("1. Inspecting the Batch Script (`driver.sh`)")
+    st.write(
+        "The submission script (`src/atw_diags/workflow/driver.sh`) wraps resource allocation "
+        "and command execution into a reproducible Slurm directive:"
+    )
 
-source $(conda info --base)/etc/profile.d/conda.sh
-conda activate snakemake-env (or spear-analysis if you have snakemake installed here!)
-
-snakemake -s src/atw_diags/workflow/Snakefile --cores 4 --use-conda --forceall
-""", language="bash")
-
-    st.warning("**Drawbacks:** Requires hardcoded working directories, manual environment export variables, and lacks easy dynamic config passing.")
-
-    # ── Step 2 ───────────────────────────────────────────────────────────
-    st.markdown("#### 2. Method B: Package Approach (`driver.sh`)")
-    st.write("To solve these path and config issues, `driver.sh` uses the installed `pip` package CLI (`run-atw-diags`):")
-    st.code("cat src/atw_diags/workflow/driver.sh", language="bash")
-
-    st.code("""
-#!/bin/bash
+    st.code(
+        """#!/bin/bash
 #SBATCH --job-name=atw_diags
 #SBATCH --output=/work/a1r/slurm_%j.out
 #SBATCH --error=/work/a1r/slurm_%j.err
@@ -86,70 +100,73 @@ source ~/.bashrc
 source $(conda info --base)/etc/profile.d/conda.sh
 conda activate spear-analysis-pip
 
+# Invokes the packaged CLI entry point with absolute paths
 run-atw-diags \\
-    --case /home/a1r/git/atw/configs/atw_atmos_ts_monthly_sfc_ocean_updated_config.json \\
-    --settings /home/a1r/git/atw/configs/settings.json \\
+    --case /home/a1r/git/atw/atw_diags/configs/atw_atmos_ts_monthly_sfc_ocean_updated_config.json \\
+    --settings /home/a1r/git/atw/atw_diags/diagnostics/settings.json \\
     out_dir="/work/a1r/" -w $TMPDIR
-""", language="bash")
+""",
+        language="bash",
+    )
 
-    st.info("""
-    **What `driver.sh` resolves behind the scenes (`runner.py`):**
-    * Automatically finds the internal `Snakefile` inside the Conda environment package. 
-    * Snakefile chains the order of operations, input, output necessary
-    * Registers the Jupyter kernel for Papermill automatically.
-    * Papermill runs the notebooks, and injects parameters from the snakemake/batch workflow into your notebook. Yes it saves a copy of your executed notebook so you know what value was exactly used if your notebook has parameters to be passed such as out_dir
-    * Allows passing custom JSON configs directly from the command line.
-    * In our example, the notebook is found in src/atw-diags/notebooks/ directory.
-    * All our workflow files like driver scripts and Snakemake are organized in src/atw-diags/workflow directory.
-    """)
-
-    # ── Step 3 ───────────────────────────────────────────────────────────
-    st.markdown("#### 3. Submit and Monitor")
-    st.write("Submit the job from your repository root:")
-    st.code("sbatch src/atw_diags/workflow/driver.sh", language="bash")
-
-    st.write("Check queue status and stream live logs:")
-    st.code("squeue -u $USER\ntail -f /work/a1r/slurm_<JOB_ID>.out", language="bash")
-
-    st.subheader("Locating Diagnostic Outputs")
-    st.write("""
-    Once the pipeline completes, check your designated output directory (e.g. `/work/a1r/` or your specified `out_dir` in your notebook. (TODO add more clarity)):
-    * **Executed Notebook (`.ipynb`):** Papermill saves a fully executed copy of the notebook containing all printed outputs, populated parameters, and cell error traces.
-    * **Diagnostic Figures:** Generated plot files (e.g., `.png`, `.pdf`, `.nc`) are saved directly into the output figures subfolder defined in your case JSON settings.
-    * **Log files:** This is currently in the atw_diags directory. TODO move to output perhaps.
-    """)
-
-    st.write("""
-    There is a module underway to help diagnostic developers understand how to make a new script/notebook work using this pipeline. Stay tuned
-    """)
-    # ── Reflection Quiz ──────────────────────────────────────────────────
+    # ── Job Control & Verification ───────────────────────────────────────
     st.markdown("---")
-    st.subheader("Quiz")
+    st.subheader("2. Job Control & Output Verification")
+
+    st.write("Submit the job and monitor output in real time:")
+    st.code(
+        """# 1. Submit script to the Slurm queue
+sbatch src/atw_diags/workflow/driver.sh
+
+# 2. Check running status on allocated nodes
+squeue -u $USER
+
+# 3. Stream live cell execution and Snakemake step progress
+tail -f /work/a1r/slurm_<JOB_ID>.out
+""",
+        language="bash",
+    )
+
+    st.write("**Where artifacts live upon completion:**")
+    st.markdown("""
+    * **`*_executed.ipynb`**: The run artifact containing cell-by-cell execution timings, standard output, and injected variables (`config_path`, `out_dir`).
+    * **Figures / NetCDF Datasets**: Saved directly to `/work/a1r/` as dictated by the rule targets.
+    * **Slurm Output (`slurm_<JOB_ID>.out`)**: Records environment activations, worker node hostnames, and OS-level exits.
+    """)
+
+    # ── Knowledge Check ─────────────────────────────────────────────────
+    st.markdown("---")
+    st.subheader("Knowledge Check")
 
     q1 = st.radio(
-        "1. What main issue in `vanilla_driver.sh` does `driver.sh` resolve?",
+        "1. Why do we run through `run-atw-diags` in `driver.sh` rather than calling `jupyter nbconvert` or interactive VS Code directly?",
         [
-            "It eliminates hardcoded repository paths and manual notebook directory exports.",
-            "It runs the pipeline without a Conda environment.",
-            "It allows jobs to run without memory.",
-        ]
+            "It guarantees that absolute paths, kernel registrations, and Snakemake DAG dependency checks are handled dynamically inside compute node allocations.",
+            "Jupyter notebooks cannot run on compute nodes without an active X11 GUI window.",
+            "Slurm requires all analysis code to be converted into C binaries before execution.",
+        ],
     )
 
     q2 = st.radio(
-        "2. What does Papermill do inside the Snakemake workflow?",
+        "2. If a batch run fails mid-computation, where is the most detailed Python-level traceback preserved?",
         [
-            "Allocates Slurm nodes.",
-            "Executes Jupyter notebooks headlessly and passes parameters into cells.",
-            "Compiles Python into C++.",
-        ]
+            "In the default configuration JSON file.",
+            "Inside the executed output notebook (`*_executed.ipynb`) at the exact cell that crashed.",
+            "In the Git commit history.",
+        ],
     )
 
-    if st.button("Check Answers"):
-        if (
-            q1 == "It eliminates hardcoded repository paths and manual notebook directory exports."
-            and q2 == "Executes Jupyter notebooks headlessly and passes parameters into cells."
-        ):
-            st.success("Correct!")
-            st.balloons()
+    if st.button("Check Answers", type="primary"):
+        c1 = (
+            q1
+            == "It guarantees that absolute paths, kernel registrations, and Snakemake DAG dependency checks are handled dynamically inside compute node allocations."
+        )
+        c2 = (
+            q2
+            == "Inside the executed output notebook (`*_executed.ipynb`) at the exact cell that crashed."
+        )
+
+        if c1 and c2:
+            st.success("Correct! Ready to proceed.")
         else:
-            st.error("Some answers were incorrect. Review the steps above.")
+            st.error("One or more answers need review. Check the trace and retry.")
