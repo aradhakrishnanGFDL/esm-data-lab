@@ -1,5 +1,5 @@
 import streamlit as st
-from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_format, data, object_store_access, batch
+from modules import git_setup, github_repo_web, git_first, git_collab, git_contrib, config_env, ide, vscode_tips, cimes_internship, data_format, data, object_store_access, batch, packaging
 
 st.sidebar.title("Course Modules")
 
