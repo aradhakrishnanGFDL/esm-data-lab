@@ -54,7 +54,7 @@ def run():
     st.subheader("How to Add the `parameters` Tag in VS Code")
     st.write("Before Papermill can pass runtime values to a notebook, you must designate the cell containing your default variables as the parameters cell:")
 
-    col_gui1, col_gui2 = st.columns([2, 3])
+    col_gui1, col_gui2 = st.columns([1, 4])
     with col_gui1:
         st.markdown("""
         **Tagging Steps:**
@@ -65,7 +65,7 @@ def run():
         5. Verify that the **`parameters`** tag appears at the bottom-left corner of that cell's frame.
         """)
         
-        st.info("💡 **Alternatively:** You can also click the `+ Tag` button at the bottom-left of the cell and type `parameters` manually!")
+        st.info(" **Alternatively:** You can also click the `+ Tag` button at the bottom-left of the cell and type `parameters` manually!")
         
     with col_gui2:
         # Load your marked-up visual screenshot from assets
