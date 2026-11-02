@@ -59,7 +59,7 @@ cd /home/a1r/git/atw/atw_diags
 export ATW_NB_DIR="/home/a1r/git/atw/atw_diags/src/atw_diags/notebooks"
 
 source $(conda info --base)/etc/profile.d/conda.sh
-conda activate snakemake-env
+conda activate snakemake-env (or spear-analysis if you have snakemake installed here!)
 
 snakemake -s src/atw_diags/workflow/Snakefile --cores 4 --use-conda --forceall
 """, language="bash")
