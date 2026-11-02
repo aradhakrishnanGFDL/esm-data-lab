@@ -203,7 +203,7 @@ python
     """)
     
     # Render the screenshot of the 'Use this template' action
-    st.image("image_2.png", caption="Initiating a brand-new project from a GitHub repository template.", use_container_width=True)
+    st.image("assets/image_2.png", caption="Initiating a brand-new project from a GitHub repository template.", use_container_width=True)
 
     # ── 6. Next Steps / Advanced Distribution ──────────────────────────
     st.header("6. Beyond Local Installation (Advanced)")
