@@ -226,17 +226,17 @@ python
     q1 = st.radio(
         "1. What is the primary benefit of installing your package locally with `pip install -e .` for diagnostic pipelines?",
         [
-            "It links local repository code to site-packages, allowing automated workflows to trigger diagnostic tools from any directory.",
             "It uploads the code directly to a public PyPI server.",
             "It converts Python code into binary C executables.",
+             "It links local repository code to site-packages, allowing automated workflows to trigger diagnostic tools from any directory."
         ]
     )
 
     q2 = st.radio(
         "2. Which command lets you verify the exact installation path and registered dependencies of your package?",
         [
-            "pip show <package-name>",
             "which python",
+            "pip show <package-name>",
             "conda list --env",
         ]
     )
