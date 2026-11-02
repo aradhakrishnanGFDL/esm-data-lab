@@ -53,8 +53,7 @@ def run():
     # ── Sub-step: GUI Instructions for Students ──
     st.subheader("How to Add the `parameters` Tag in VS Code")
     st.write("Before Papermill can pass runtime values to a notebook, you must designate the cell containing your default variables as the parameters cell:")
-
-    col_gui1, col_gui2 = st.columns([1, 4])
+    col_gui1, col_gui2 = st.columns([2, 3])
     with col_gui1:
         st.markdown("""
         **Tagging Steps:**
