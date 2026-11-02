@@ -1,6 +1,6 @@
 import streamlit as st
 
-def run_module_8():
+def run():
     st.title("Module 8: Packaging Python Diagnostics")
 
     # ── Learning Objectives & Scope ─────────────────────────────────────
