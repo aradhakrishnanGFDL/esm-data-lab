@@ -66,36 +66,22 @@ def run():
         
         st.info(" **Alternatively:** You can also click the `+ Tag` button at the bottom-left of the cell and type `parameters` manually!")
         
-    with col_gui2:
-        # Load your marked-up visual screenshot from assets
-        from pathlib import Path
-        from PIL import Image
+
+    from pathlib import Path
+    from PIL import Image
         
-        try:
+     try:
 
             # Point to project root (/mount/src/esm-data-lab/)
             PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
             # Path to the root assets folder
             IMAGE_PATH = PROJECT_ROOT / "assets" / "papermill_tagging.jpeg"
-
-           # if IMAGE_PATH.exists():
-           #     st.image(str(IMAGE_PATH), caption="Papermill Tagging")
-           # else:
-           #     st.error(f"Image not found at: {IMAGE_PATH}")
-                
-            #img = Image.open(IMAGE_PATH)
-            #st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
-        except Exception as e:
+            img = Image.open(IMAGE_PATH)
+            st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
+      except Exception as e:
             st.warning(f"Could not load Image asset: verify assets/papermill_tagging.jpeg exists. Error: {e}")
-    if IMAGE_PATH.exists():
-                st.image(str(IMAGE_PATH), caption="Papermill Tagging")
-    else:
-                st.error(f"Image not found at: {IMAGE_PATH}")
-                
-    st.image(img, caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
-        
-    # ── Sub-step: Runtime Execution Mechanic ──
+          
     st.subheader("How Parameter Injection Works at Runtime")
     st.write("When Papermill runs, it leaves your original tagged cell untouched and automatically inserts a new cell directly below it with the updated values:")
 
