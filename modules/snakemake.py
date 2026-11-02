@@ -1,6 +1,6 @@
 import streamlit as st
 
-def run_module_snakemake_papermill_slurm():
+def run():
     st.title("Module 8.5: Workflow Automation with Snakemake, Papermill, and Slurm")
 
     # ── Learning Objectives & Scope ─────────────────────────────────────
