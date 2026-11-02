@@ -69,7 +69,7 @@ def run():
         
     with col_gui2:
         # Load your marked-up visual screenshot from assets
-        st.image("assets/papermill_tagging.png", caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
+        st.image("assets/papermill_tagging.jpeg", caption="Visual Guide: Marking a cell as parameters using VS Code cell actions.", use_container_width=True)
 
     # ── Sub-step: Runtime Execution Mechanic ──
     st.subheader("How Parameter Injection Works at Runtime")
