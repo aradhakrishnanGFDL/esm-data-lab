@@ -80,14 +80,14 @@ print(ds)
     st.header("4. Real example: SPEAR data on the GFDL server")
     st.write("""
         Here's how to open a real dataset you have access to on the GFDL server —
-        surface temperature from the SPEAR MED ensemble, SSP5-8.5 scenario.
+        surface temperature from the SPEAR MED ensemble, historical experiment
     """)
     st.write("**Single file:**")
     st.code("""
 import xarray as xr
 
 ds = xr.open_dataset(
-    "/decp/SPEAR_MED/SPEAR_c192_o1_Scen_SSP585_IC2011_K50/"
+    "/decp/SPEAR_MED/[SPEAR_c192_historical]/"
     "pp_ens_25/atmos_daily/ts/daily/10yr/"
     "atmos_daily.20150101-20201231.t_surf.nc"
 )
@@ -98,7 +98,7 @@ print(ds)
 import xarray as xr
 
 ds = xr.open_mfdataset(
-    "/decp/SPEAR_MED/SPEAR_c192_o1_Scen_SSP585_IC2011_K50/"
+    "/decp/SPEAR_MED/AR_c192_historical]/"
     "pp_ens_25/atmos_daily/ts/daily/10yr/"
     "atmos_daily.*.t_surf.nc",
     combine="by_coords"
@@ -119,7 +119,7 @@ import xarray as xr
 
 # Single file
 ds = xr.open_dataset(
-    "/decp/SPEAR_MED/SPEAR_c192_o1_Scen_SSP585_IC2011_K50/"
+    "/decp/SPEAR_MED/[SPEAR_c192_historical]/"
     "pp_ens_25/atmos_daily/ts/daily/10yr/"
     "atmos_daily.20150101-20201231.t_surf.nc"
 )
@@ -130,7 +130,7 @@ import xarray as xr
 
 # All 10-year chunks
 ds_all = xr.open_mfdataset(
-    "/decp/SPEAR_MED/SPEAR_c192_o1_Scen_SSP585_IC2011_K50/"
+    "/decp/SPEAR_MED/[SPEAR_c192_historical]"
     "pp_ens_25/atmos_daily/ts/daily/10yr/"
     "atmos_daily.*.t_surf.nc",
     combine="by_coords"
